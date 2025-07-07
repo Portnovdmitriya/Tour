@@ -24,6 +24,10 @@
             android:name="placeId"
             app:argType="long" />
     </fragment>
+    <!-- Фрагмент для избранного -->
+    <fragment
+        android:id="@+id/navigation_favorites"
+    android:name="com.example.tourguideplus.ui.main.FavoritesFragment"
+    android:label="Избранное" />
 
-    <!-- остальные фрагменты... -->
 </navigation>

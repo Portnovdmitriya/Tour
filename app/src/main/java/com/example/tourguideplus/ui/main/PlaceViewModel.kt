@@ -16,6 +16,11 @@ class PlaceViewModel(application: TourGuideApp) : AndroidViewModel(application) 
     private val _selectedPlace = MutableLiveData<PlaceEntity?>()
     val selectedPlace: LiveData<PlaceEntity?> = _selectedPlace
 
+    fun loadPlaceById(id: Long) = viewModelScope.launch {
+        val p = repository.getPlaceById(id)
+        _selectedPlace.postValue(p)
+    }
+
     fun selectPlace(place: PlaceEntity) {
         _selectedPlace.value = place
     }

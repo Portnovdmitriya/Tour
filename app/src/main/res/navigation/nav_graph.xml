@@ -17,7 +17,13 @@
     <fragment
         android:id="@+id/placeDetailFragment"
         android:name="com.example.tourguideplus.ui.main.PlaceDetailFragment"
-        android:label="Детали места" />
+        android:label="Детали места">
+
+        <!-- аргумент placeId -->
+        <argument
+            android:name="placeId"
+            app:argType="long" />
+    </fragment>
 
     <!-- остальные фрагменты... -->
 </navigation>

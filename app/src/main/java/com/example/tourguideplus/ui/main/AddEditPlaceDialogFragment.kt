@@ -97,8 +97,15 @@ class AddEditPlaceDialogFragment(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_PICK_IMAGE && resultCode == Activity.RESULT_OK) {
-            photoUri = data?.data
-            binding.ivPhotoPreview.setImageURI(photoUri)
+            data?.data?.let { uri ->
+                // захватываем persistable разрешения
+                val takeFlags = data.flags and
+                        (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                requireContext().contentResolver.takePersistableUriPermission(uri, takeFlags)
+
+                photoUri = uri
+                binding.ivPhotoPreview.setImageURI(photoUri)
+            }
         } else super.onActivityResult(requestCode, resultCode, data)
     }
 

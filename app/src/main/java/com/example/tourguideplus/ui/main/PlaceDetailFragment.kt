@@ -15,7 +15,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.navigation.fragment.findNavController
 
 class PlaceDetailFragment : Fragment() {
-
+    private var currentPlace: PlaceEntity? = null
     private var _binding: FragmentPlaceDetailBinding? = null
     private val binding get() = _binding!!
 
@@ -31,7 +31,8 @@ class PlaceDetailFragment : Fragment() {
     }
 
     private fun bindPlace(place: PlaceEntity) {
-        // Сохраняем текущий объект в поле, если нужно
+        currentPlace = place
+
         binding.tvName.text        = place.name
         binding.tvCategory.text    = place.category
         binding.tvDescription.text = place.description
@@ -40,17 +41,17 @@ class PlaceDetailFragment : Fragment() {
             catch (_: Exception) {}
         }
 
-        // Обработчик удаления:
-        binding.btnDelete.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Удаление")
-                .setMessage("Вы уверены, что хотите удалить «${place.name}»?")
-                .setNegativeButton("Отмена", null)
-                .setPositiveButton("Удалить") { _, _ ->
-                    viewModel.deletePlace(place)
-                    findNavController().popBackStack()
-                }
-                .show()
+        //  «избранное»
+        binding.btnFavorite.text = if (place.isFavorite)
+            "Убрать из избранного"
+        else
+            "Добавить в избранное"
+
+        // Обработчик «избранного»
+        binding.btnFavorite.setOnClickListener {
+            val updated = place.copy(isFavorite = !place.isFavorite)
+            viewModel.updatePlace(updated)
+            bindPlace(updated)
         }
     }
 

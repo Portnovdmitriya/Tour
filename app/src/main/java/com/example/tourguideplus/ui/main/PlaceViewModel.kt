@@ -8,7 +8,8 @@ import kotlinx.coroutines.launch
 class PlaceViewModel(application: TourGuideApp) : AndroidViewModel(application) {
 
     private val repository = application.placeRepository
-
+    private val _wikiExtract = MutableLiveData<String?>()
+    val wikiExtract: LiveData<String?> = _wikiExtract
     // LiveData со списком мест
     val places: LiveData<List<PlaceEntity>> = repository.allPlaces
 
@@ -38,6 +39,11 @@ class PlaceViewModel(application: TourGuideApp) : AndroidViewModel(application) 
     // Удаление места
     fun deletePlace(place: PlaceEntity) = viewModelScope.launch {
         repository.delete(place)
+    }
+
+    fun loadWikiSummary(title: String) = viewModelScope.launch {
+        val text = repository.fetchWikiSummary(title)
+        _wikiExtract.postValue(text)
     }
 }
 

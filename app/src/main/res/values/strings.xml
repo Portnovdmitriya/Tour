@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TourGuidePlus</string>
+    <string name="owm_api_key">be96bf4e8afed4f8b2f8c4f2441b6d06</string>
 </resources>

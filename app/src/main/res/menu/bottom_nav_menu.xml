@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_places"
+        android:title="Места" />
+    <item
+        android:id="@+id/navigation_routes"
+        android:title="Маршруты" />
+    <item
+        android:id="@+id/navigation_favorites"
+        android:title="Избранное" />
+    <item
+        android:id="@+id/navigation_weather"
+        android:title="Погода" />
+    <item
+        android:id="@+id/navigation_help"
+        android:title="Справка" />
+</menu>

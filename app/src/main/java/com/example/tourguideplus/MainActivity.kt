@@ -3,37 +3,46 @@ package com.example.tourguideplus
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
 import com.example.tourguideplus.databinding.ActivityMainBinding
 import com.example.tourguideplus.ui.main.AddEditPlaceDialogFragment
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding  // не File!
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Inflate с помощью viewBinding
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)  // <-- binding.root
+        setContentView(binding.root)
 
-        // Навигация
         val navController = findNavController(R.id.nav_host_fragment)
+
+        // Настраиваем BottomNavigation как раньше
+        binding.bottomNav.setupWithNavController(navController)
+
+        // Переопределяем поведение нажатия, чтобы "Места" всегда поп-бекали:
         binding.bottomNav.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                // Если нажали «Места» — всегда поп-бэк к корню списка
                 R.id.placesFragment -> {
                     navController.popBackStack(R.id.placesFragment, false)
                     true
                 }
-                // Остальные пункты пусть работают по умолчанию через NavigationUI
                 else -> NavigationUI.onNavDestinationSelected(menuItem, navController)
             }
         }
 
-        // Пока что просто заглушка
+        // Слушаем смену экрана — чтобы показывать/скрывать FAB
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.placesFragment) {
+                binding.fabAddPlace.show()
+            } else {
+                binding.fabAddPlace.hide()
+            }
+        }
+
+        // Обработчик FAB — нажатие открывает диалог создания места
         binding.fabAddPlace.setOnClickListener {
             AddEditPlaceDialogFragment().show(
                 supportFragmentManager,
@@ -42,3 +51,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+

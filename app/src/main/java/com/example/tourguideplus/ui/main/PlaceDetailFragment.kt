@@ -1,29 +1,32 @@
 package com.example.tourguideplus.ui.main
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.tourguideplus.R
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.data.model.PlaceEntity
 import com.example.tourguideplus.databinding.FragmentPlaceDetailBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import androidx.navigation.fragment.findNavController
-import android.content.Intent
-import android.widget.Toast
-import com.example.tourguideplus.R
 
 class PlaceDetailFragment : Fragment() {
     private var currentPlace: PlaceEntity? = null
     private var _binding: FragmentPlaceDetailBinding? = null
     private val binding get() = _binding!!
 
-    // Объявляем viewModel
     private lateinit var viewModel: PlaceViewModel
+
+    // Диалог прогресса для Wikipedia
+    private var wikiProgressDialog: AlertDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +46,8 @@ class PlaceDetailFragment : Fragment() {
             try { binding.ivPhoto.setImageURI(Uri.parse(uriStr)) }
             catch (_: Exception) {}
         }
-// Обработчик удаления
+
+        // Кнопка удаления
         binding.btnDelete.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Удаление")
@@ -51,60 +55,90 @@ class PlaceDetailFragment : Fragment() {
                 .setNegativeButton("Отмена", null)
                 .setPositiveButton("Удалить") { _, _ ->
                     viewModel.deletePlace(place)
-                    // возвращаемся к списку
                     findNavController().popBackStack(R.id.placesFragment, false)
                 }
                 .show()
         }
-        //  «избранное»
+
+        // Избранное
         binding.btnFavorite.text = if (place.isFavorite)
             "Убрать из избранного"
         else
             "Добавить в избранное"
 
-        // Обработчик «избранного»
         binding.btnFavorite.setOnClickListener {
             val updated = place.copy(isFavorite = !place.isFavorite)
             viewModel.updatePlace(updated)
             bindPlace(updated)
         }
+
+        // Показать на карте (веб-версия)
         binding.btnMap.setOnClickListener {
-            currentPlace?.let { place ->
-                // Кодируем название для URL
-                val query = Uri.encode(place.name)
-                // Собираем ссылку на веб-версию Google Maps
+            place.name.let { name ->
+                val query = Uri.encode(name)
                 val url = "https://www.google.com/maps/search/?api=1&query=$query"
-                // Готовим Intent для открытия ссылки
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                    // Указываем, что нам нужен браузер
-                    addCategory(Intent.CATEGORY_BROWSABLE)
-                }
-                // Показываем диалог выбора приложения
-                val chooser = Intent.createChooser(intent, "Открыть в браузере")
+                val chooser = Intent.createChooser(
+                    Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        .addCategory(Intent.CATEGORY_BROWSABLE),
+                    "Открыть в браузере"
+                )
                 startActivity(chooser)
             }
         }
 
-    }
+        // Википедия
+        binding.btnWiki.setOnClickListener {
+            place.name.let { name ->
+                // Показать диалог прогресса
+                wikiProgressDialog = MaterialAlertDialogBuilder(requireContext())
+                    .setView(ProgressBar(requireContext()).apply {
+                        isIndeterminate = true
+                        setPadding(50, 50, 50, 50)
+                    })
+                    .setCancelable(false)
+                    .show()
 
+                // Запустить загрузку
+                viewModel.loadWikiSummary(name)
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Инициализируем viewModel
+        // Инициализируем ViewModel
         val factory = PlaceViewModelFactory(requireActivity().application as TourGuideApp)
-        viewModel = ViewModelProvider(this, factory)
-            .get(PlaceViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory)[PlaceViewModel::class.java]
 
-        // Получаем ID из аргументов
+        // Читаем аргумент
         val placeId = arguments?.getLong("placeId") ?: return
-
-        // Загружаем данные
         viewModel.loadPlaceById(placeId)
 
-        // Наблюдаем за выбранным местом и биндим
+        // Наблюдаем данные места
         viewModel.selectedPlace.observe(viewLifecycleOwner) { place ->
             place?.let { bindPlace(it) }
+        }
+
+        // Наблюдаем результат Википедии
+        viewModel.wikiExtract.observe(viewLifecycleOwner) { extract ->
+            // Скрываем диалог прогресса
+            wikiProgressDialog?.dismiss()
+            wikiProgressDialog = null
+
+            if (extract != null) {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(currentPlace?.name)
+                    .setMessage(extract)
+                    .setPositiveButton("OK", null)
+                    .show()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Не удалось получить данные из Википедии",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

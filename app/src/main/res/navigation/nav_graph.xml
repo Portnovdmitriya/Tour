@@ -32,4 +32,8 @@
     <action
         android:id="@+id/action_global_navigation_favorites_to_placeDetailFragment"
         app:destination="@id/placeDetailFragment" />
+    <fragment
+        android:id="@+id/navigation_weather"
+        android:name="com.example.tourguideplus.ui.weather.WeatherFragment"
+        android:label="Погода" />
 </navigation>

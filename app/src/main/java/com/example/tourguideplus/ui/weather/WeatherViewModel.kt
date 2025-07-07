@@ -12,17 +12,30 @@ class WeatherViewModel(app: Application) : AndroidViewModel(app) {
     private val _weather = MutableLiveData<WeatherState>()
     val weather: LiveData<WeatherState> = _weather
 
+    private val apiKey: String = app.getString(R.string.owm_api_key)
+
+    // по названию города
+    fun loadByCity(city: String) = viewModelScope.launch {
+        _weather.value = WeatherState.Loading
+        try {
+            val resp = repo.getCurrentByCity(city, apiKey)
+            _weather.value = WeatherState.Success(resp)
+        } catch (e: Exception) {
+            _weather.value = WeatherState.Error(e.message ?: "Ошибка сети")
+        }
+    }
+    // по геолокации
     fun load(lat: Double, lon: Double) = viewModelScope.launch {
         _weather.value = WeatherState.Loading
         try {
-            val key = getApplication<Application>().getString(R.string.owm_api_key)
-            val resp = repo.getCurrent(lat, lon, key)
+            val resp = repo.getCurrent(lat, lon, apiKey)
             _weather.value = WeatherState.Success(resp)
         } catch (e: Exception) {
             _weather.value = WeatherState.Error(e.message ?: "Ошибка сети")
         }
     }
 }
+
 
 sealed class WeatherState {
     object Loading : WeatherState()

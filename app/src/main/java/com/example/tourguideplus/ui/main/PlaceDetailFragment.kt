@@ -2,6 +2,7 @@ package com.example.tourguideplus.ui.main
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,7 @@ class PlaceDetailFragment : Fragment() {
     private var _binding: FragmentPlaceDetailBinding? = null
     private val binding get() = _binding!!
 
-    // <-- Объявляем viewModel
+    // Объявляем viewModel
     private lateinit var viewModel: PlaceViewModel
 
     override fun onCreateView(
@@ -31,8 +32,14 @@ class PlaceDetailFragment : Fragment() {
         binding.tvName.text        = place.name
         binding.tvCategory.text    = place.category
         binding.tvDescription.text = place.description
+
         place.photoUri?.let { uriStr ->
-            binding.ivPhoto.setImageURI(Uri.parse(uriStr))
+            try {
+                binding.ivPhoto.setImageURI(Uri.parse(uriStr))
+            } catch (e: Exception) {
+                // на случай непредвиденной ошибки — просто не показываем картинку
+                Log.e("PlaceDetail", "Ошибка при загрузке фото", e)
+            }
         }
     }
 

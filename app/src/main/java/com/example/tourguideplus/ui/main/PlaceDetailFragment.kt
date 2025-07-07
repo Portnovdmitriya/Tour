@@ -13,6 +13,9 @@ import com.example.tourguideplus.data.model.PlaceEntity
 import com.example.tourguideplus.databinding.FragmentPlaceDetailBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.navigation.fragment.findNavController
+import android.content.Intent
+import android.widget.Toast
+import com.example.tourguideplus.R
 
 class PlaceDetailFragment : Fragment() {
     private var currentPlace: PlaceEntity? = null
@@ -40,7 +43,19 @@ class PlaceDetailFragment : Fragment() {
             try { binding.ivPhoto.setImageURI(Uri.parse(uriStr)) }
             catch (_: Exception) {}
         }
-
+// Обработчик удаления
+        binding.btnDelete.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Удаление")
+                .setMessage("Вы уверены, что хотите удалить «${place.name}»?")
+                .setNegativeButton("Отмена", null)
+                .setPositiveButton("Удалить") { _, _ ->
+                    viewModel.deletePlace(place)
+                    // возвращаемся к списку
+                    findNavController().popBackStack(R.id.placesFragment, false)
+                }
+                .show()
+        }
         //  «избранное»
         binding.btnFavorite.text = if (place.isFavorite)
             "Убрать из избранного"
@@ -53,6 +68,23 @@ class PlaceDetailFragment : Fragment() {
             viewModel.updatePlace(updated)
             bindPlace(updated)
         }
+        binding.btnMap.setOnClickListener {
+            currentPlace?.let { place ->
+                // Кодируем название для URL
+                val query = Uri.encode(place.name)
+                // Собираем ссылку на веб-версию Google Maps
+                val url = "https://www.google.com/maps/search/?api=1&query=$query"
+                // Готовим Intent для открытия ссылки
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                    // Указываем, что нам нужен браузер
+                    addCategory(Intent.CATEGORY_BROWSABLE)
+                }
+                // Показываем диалог выбора приложения
+                val chooser = Intent.createChooser(intent, "Открыть в браузере")
+                startActivity(chooser)
+            }
+        }
+
     }
 
 

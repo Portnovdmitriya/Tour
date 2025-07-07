@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.tourguideplus.databinding.ActivityMainBinding
+import com.example.tourguideplus.ui.main.AddEditPlaceDialogFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +24,10 @@ class MainActivity : AppCompatActivity() {
 
         // Пока что просто заглушка
         binding.fabAddPlace.setOnClickListener {
-            // TODO: покажем AddPlaceDialogFragment или другой UI
+            AddEditPlaceDialogFragment().show(
+                supportFragmentManager,
+                "AddEditPlaceDialog"
+            )
         }
     }
 }

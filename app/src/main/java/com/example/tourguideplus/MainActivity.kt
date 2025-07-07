@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         binding.bottomNav.setupWithNavController(navController)
 
-        // Пока что просто заглушка: откроем диалог вручную позже
+        // Пока что просто заглушка
         binding.fabAddPlace.setOnClickListener {
             // TODO: покажем AddPlaceDialogFragment или другой UI
         }

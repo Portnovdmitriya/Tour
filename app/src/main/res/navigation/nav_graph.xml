@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
     app:startDestination="@id/placesFragment">
@@ -7,12 +8,16 @@
     <fragment
         android:id="@+id/placesFragment"
         android:name="com.example.tourguideplus.ui.main.PlacesFragment"
-        android:label="Места" />
-
-    <!-- TODO: фрагменты для маршрутов, избранного, погоды -->
+        android:label="Места">
+        <action
+            android:id="@+id/action_placesFragment_to_placeDetailFragment"
+            app:destination="@id/placeDetailFragment" />
+    </fragment>
 
     <fragment
-        android:id="@+id/helpFragment"
-        android:name="com.example.tourguideplus.ui.help.HelpFragment"
-        android:label="Справка" />
+        android:id="@+id/placeDetailFragment"
+        android:name="com.example.tourguideplus.ui.main.PlaceDetailFragment"
+        android:label="Детали места" />
+
+    <!-- остальные фрагменты... -->
 </navigation>

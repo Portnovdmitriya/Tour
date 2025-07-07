@@ -6,8 +6,5 @@ class WeatherRepository {
     suspend fun getCurrentByCity(city: String, key: String): WeatherResponse =
         api.getCurrentWeatherByCity(city, apiKey = key)
 
-    // Если понадобится геолокация
-    suspend fun getCurrent(lat: Double, lon: Double, key: String): WeatherResponse =
-        api.getCurrentWeather(lat, lon, apiKey = key)
 }
 

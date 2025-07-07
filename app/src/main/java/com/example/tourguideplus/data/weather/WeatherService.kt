@@ -13,14 +13,6 @@ interface WeatherService {
         @Query("appid") apiKey: String
     ): WeatherResponse
 
-    // Оставляем предыдущий метод, если нужен
-    @GET("weather")
-    suspend fun getCurrentWeather(
-        @Query("lat") lat: Double,
-        @Query("lon") lon: Double,
-        @Query("units") units: String = "metric",
-        @Query("appid") apiKey: String
-    ): WeatherResponse
 
     companion object {
         private const val BASE = "https://api.openweathermap.org/data/2.5/"

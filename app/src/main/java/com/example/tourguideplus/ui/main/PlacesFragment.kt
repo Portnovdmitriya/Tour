@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.tourguideplus.R
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.databinding.FragmentPlacesBinding
+import androidx.core.os.bundleOf
 
 class PlacesFragment : Fragment() {
 
@@ -36,9 +37,11 @@ class PlacesFragment : Fragment() {
 
         // Adapter
         adapter = PlaceAdapter { place ->
-            viewModel.selectPlace(place)
-            // Навигация к экрану деталей
-            findNavController().navigate(R.id.action_placesFragment_to_placeDetailFragment)
+            val bundle = bundleOf("placeId" to place.id)
+            findNavController().navigate(
+                R.id.action_placesFragment_to_placeDetailFragment,
+                bundle
+            )
         }
 
         // RecyclerView

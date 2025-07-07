@@ -24,16 +24,7 @@ class WeatherViewModel(app: Application) : AndroidViewModel(app) {
             _weather.value = WeatherState.Error(e.message ?: "Ошибка сети")
         }
     }
-    // по геолокации
-    fun load(lat: Double, lon: Double) = viewModelScope.launch {
-        _weather.value = WeatherState.Loading
-        try {
-            val resp = repo.getCurrent(lat, lon, apiKey)
-            _weather.value = WeatherState.Success(resp)
-        } catch (e: Exception) {
-            _weather.value = WeatherState.Error(e.message ?: "Ошибка сети")
-        }
-    }
+
 }
 
 

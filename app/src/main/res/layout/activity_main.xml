@@ -19,7 +19,7 @@
         android:id="@+id/fab_add_place"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="60dp"
+        android:layout_margin="80dp"
         android:contentDescription="Добавить место"
         android:src="@drawable/ic_add"
         app:layout_anchor="@id/bottom_nav"

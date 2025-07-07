@@ -9,10 +9,10 @@ import com.example.tourguideplus.data.model.PlaceEntity
 
 @Database(
     entities = [
-        PlaceEntity::class  // <-- используем ::class, а не просто PlaceEntity
-        // позже добавите остальные: CategoryEntity::class, ReviewEntity::class и т.д.
+        PlaceEntity::class
+
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

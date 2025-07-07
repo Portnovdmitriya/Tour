@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.data.model.PlaceEntity
 import com.example.tourguideplus.databinding.FragmentPlaceDetailBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.navigation.fragment.findNavController
 
 class PlaceDetailFragment : Fragment() {
 
@@ -29,19 +31,29 @@ class PlaceDetailFragment : Fragment() {
     }
 
     private fun bindPlace(place: PlaceEntity) {
+        // Сохраняем текущий объект в поле, если нужно
         binding.tvName.text        = place.name
         binding.tvCategory.text    = place.category
         binding.tvDescription.text = place.description
-
         place.photoUri?.let { uriStr ->
-            try {
-                binding.ivPhoto.setImageURI(Uri.parse(uriStr))
-            } catch (e: Exception) {
-                // на случай непредвиденной ошибки — просто не показываем картинку
-                Log.e("PlaceDetail", "Ошибка при загрузке фото", e)
-            }
+            try { binding.ivPhoto.setImageURI(Uri.parse(uriStr)) }
+            catch (_: Exception) {}
+        }
+
+        // Обработчик удаления:
+        binding.btnDelete.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Удаление")
+                .setMessage("Вы уверены, что хотите удалить «${place.name}»?")
+                .setNegativeButton("Отмена", null)
+                .setPositiveButton("Удалить") { _, _ ->
+                    viewModel.deletePlace(place)
+                    findNavController().popBackStack()
+                }
+                .show()
         }
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

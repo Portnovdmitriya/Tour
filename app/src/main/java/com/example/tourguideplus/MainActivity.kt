@@ -6,6 +6,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.tourguideplus.databinding.ActivityMainBinding
 import com.example.tourguideplus.ui.main.AddEditPlaceDialogFragment
+import androidx.navigation.ui.NavigationUI
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,7 +21,17 @@ class MainActivity : AppCompatActivity() {
 
         // Навигация
         val navController = findNavController(R.id.nav_host_fragment)
-        binding.bottomNav.setupWithNavController(navController)
+        binding.bottomNav.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                // Если нажали «Места» — всегда поп-бэк к корню списка
+                R.id.placesFragment -> {
+                    navController.popBackStack(R.id.placesFragment, false)
+                    true
+                }
+                // Остальные пункты пусть работают по умолчанию через NavigationUI
+                else -> NavigationUI.onNavDestinationSelected(menuItem, navController)
+            }
+        }
 
         // Пока что просто заглушка
         binding.fabAddPlace.setOnClickListener {

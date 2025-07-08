@@ -4,21 +4,36 @@ package com.example.tourguideplus.ui.routes
 import androidx.lifecycle.*
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.data.model.RouteEntity
+import com.example.tourguideplus.data.model.RouteWithPlaces
 import kotlinx.coroutines.launch
 
 class RouteViewModel(app: TourGuideApp) : AndroidViewModel(app) {
     private val repo = app.routeRepository
 
-    val routes: LiveData<List<RouteEntity>> = repo.allRoutes
+    // Список маршрутов с местами
+    val routesWithPlaces: LiveData<List<RouteWithPlaces>> = repo.allRoutesWithPlaces
 
-    private val _selected = MutableLiveData<RouteEntity?>()
-    val selected: LiveData<RouteEntity?> = _selected
+    private val _selected = MutableLiveData<RouteWithPlaces?>()
+    val selected: LiveData<RouteWithPlaces?> = _selected
 
-    fun select(route: RouteEntity) { _selected.value = route }
+    fun select(routeId: Long) = viewModelScope.launch {
+        _selected.value = repo.getRouteWithPlaces(routeId)
+    }
 
-    fun add(route: RouteEntity) = viewModelScope.launch { repo.insert(route) }
-    fun update(route: RouteEntity) = viewModelScope.launch { repo.update(route) }
-    fun delete(route: RouteEntity) = viewModelScope.launch { repo.delete(route) }
+    // Создать новый маршрут вместе с местами
+    fun createRoute(name: String, description: String?, placeIds: List<Long>) = viewModelScope.launch {
+        val route = RouteEntity(name = name, description = description)
+        repo.createRouteWithPlaces(route, placeIds)
+    }
+
+    // Обновить существующий
+    fun updateRoute(route: RouteEntity, placeIds: List<Long>) = viewModelScope.launch {
+        repo.updateRouteWithPlaces(route, placeIds)
+    }
+
+    fun deleteRoute(route: RouteEntity) = viewModelScope.launch {
+        repo.deleteRoute(route)
+    }
 }
 
 class RouteViewModelFactory(

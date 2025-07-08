@@ -4,6 +4,8 @@ package com.example.tourguideplus.data.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.tourguideplus.data.model.RouteEntity
+import com.example.tourguideplus.data.model.RoutePlaceCrossRef
+import com.example.tourguideplus.data.model.RouteWithPlaces
 
 @Dao
 interface RouteDao {
@@ -21,4 +23,22 @@ interface RouteDao {
 
     @Delete
     suspend fun deleteRoute(route: RouteEntity)
+
+    // Вставить связи маршрут–место
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCrossRef(crossRef: RoutePlaceCrossRef)
+
+    // Удалить все связи для маршрута
+    @Query("DELETE FROM route_place_crossref WHERE routeId = :routeId")
+    suspend fun deleteCrossRefsForRoute(routeId: Long)
+
+    // Получить все маршруты вместе с местами
+    @Transaction
+    @Query("SELECT * FROM routes ORDER BY name ASC")
+    fun getAllRoutesWithPlaces(): LiveData<List<RouteWithPlaces>>
+
+    // Получить один маршрут вместе с местами
+    @Transaction
+    @Query("SELECT * FROM routes WHERE id = :routeId")
+    suspend fun getRouteWithPlacesById(routeId: Long): RouteWithPlaces?
 }

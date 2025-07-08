@@ -41,4 +41,8 @@
         android:name="com.example.tourguideplus.ui.help.HelpFragment"
         android:label="Справка"
         tools:layout="@layout/fragment_help" />
+    <fragment
+        android:id="@+id/navigation_routes"
+        android:name="com.example.tourguideplus.ui.routes.RoutesFragment"
+        android:label="Маршруты" />
 </navigation>

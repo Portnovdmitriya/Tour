@@ -20,4 +20,5 @@
         android:id="@+id/helpFragment"
         android:icon="@drawable/ic_help"
         android:title="Справка" />
+
 </menu>

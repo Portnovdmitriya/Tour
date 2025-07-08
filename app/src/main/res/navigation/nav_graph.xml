@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/placesFragment">
 
@@ -36,4 +36,9 @@
         android:id="@+id/navigation_weather"
         android:name="com.example.tourguideplus.ui.weather.WeatherFragment"
         android:label="Погода" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.example.tourguideplus.ui.help.HelpFragment"
+        android:label="Справка"
+        tools:layout="@layout/fragment_help" />
 </navigation>

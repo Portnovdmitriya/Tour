@@ -7,13 +7,10 @@ import com.example.tourguideplus.data.model.RouteEntity
 import com.example.tourguideplus.data.model.RoutePlaceCrossRef
 import com.example.tourguideplus.data.model.RouteWithPlaces
 
+// app/src/main/java/com/example/tourguideplus/data/dao/RouteDao.kt
 @Dao
 interface RouteDao {
-    @Query("SELECT * FROM routes ORDER BY name ASC")
-    fun getAllRoutes(): LiveData<List<RouteEntity>>
-
-    @Query("SELECT * FROM routes WHERE id = :id")
-    suspend fun getRouteById(id: Long): RouteEntity?
+    // Существующие методы…
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoute(route: RouteEntity): Long
@@ -24,21 +21,46 @@ interface RouteDao {
     @Delete
     suspend fun deleteRoute(route: RouteEntity)
 
-    // Вставить связи маршрут–место
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCrossRef(crossRef: RoutePlaceCrossRef)
 
-    // Удалить все связи для маршрута
     @Query("DELETE FROM route_place_crossref WHERE routeId = :routeId")
     suspend fun deleteCrossRefsForRoute(routeId: Long)
 
-    // Получить все маршруты вместе с местами
     @Transaction
     @Query("SELECT * FROM routes ORDER BY name ASC")
     fun getAllRoutesWithPlaces(): LiveData<List<RouteWithPlaces>>
 
-    // Получить один маршрут вместе с местами
     @Transaction
     @Query("SELECT * FROM routes WHERE id = :routeId")
     suspend fun getRouteWithPlacesById(routeId: Long): RouteWithPlaces?
+
+    // ← Вот этот метод
+    @Transaction
+    suspend fun insertRouteWithPlaces(
+        route: RouteEntity,
+        placeIds: List<Long>
+    ): Long {
+        // 1) Вставляем (или обновляем) маршрут
+        val id = insertRoute(route)
+        // 2) Сначала чистим старые связи (для update), но для нового id их нет
+        deleteCrossRefsForRoute(id)
+        // 3) Вставляем все кросс-записи
+        placeIds.forEach { pid ->
+            insertCrossRef(RoutePlaceCrossRef(id, pid))
+        }
+        return id
+    }
+
+    @Transaction
+    suspend fun updateRouteWithPlaces(
+        route: RouteEntity,
+        placeIds: List<Long>
+    ) {
+        updateRoute(route)
+        deleteCrossRefsForRoute(route.id)
+        placeIds.forEach { pid ->
+            insertCrossRef(RoutePlaceCrossRef(route.id, pid))
+        }
+    }
 }

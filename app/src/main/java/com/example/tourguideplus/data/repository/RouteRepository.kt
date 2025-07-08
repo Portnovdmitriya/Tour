@@ -14,31 +14,17 @@ class RouteRepository(private val dao: RouteDao) {
     suspend fun getRouteWithPlaces(id: Long) =
         dao.getRouteWithPlacesById(id)
 
-    // Новый метод: создаём маршрут и связи
+    // Используем новый метод DAO
     suspend fun createRouteWithPlaces(
         route: RouteEntity,
         placeIds: List<Long>
-    ): Long {
+    ): Long = dao.insertRouteWithPlaces(route, placeIds)
 
-        val newId = dao.insertRoute(route)
-
-        dao.deleteCrossRefsForRoute(newId) // очистка на случай обновления
-        placeIds.forEach { pid ->
-            dao.insertCrossRef(RoutePlaceCrossRef(newId, pid))
-        }
-        return newId
-    }
-
+    // И аналогично для обновления
     suspend fun updateRouteWithPlaces(
         route: RouteEntity,
         placeIds: List<Long>
-    ) {
-        dao.updateRoute(route)
-        dao.deleteCrossRefsForRoute(route.id)
-        placeIds.forEach { pid ->
-            dao.insertCrossRef(RoutePlaceCrossRef(route.id, pid))
-        }
-    }
+    ) = dao.updateRouteWithPlaces(route, placeIds)
 
     suspend fun deleteRoute(route: RouteEntity) {
         dao.deleteRoute(route)

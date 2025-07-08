@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_help"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Заголовок -->
+        <TextView
+            android:id="@+id/tvHelpTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Справка"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Информация об авторе -->
+        <TextView
+            android:id="@+id/tvAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Автор работы: Иванов Иван Иванович"
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Версия приложения -->
+        <TextView
+            android:id="@+id/tvVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Версия приложения: 1.0"
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Краткое описание -->
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TourGuidePlus — мобильное приложение-гид по достопримечательностям. Позволяет просматривать места, добавлять в избранное, искать на карте, оставлять отзывы и узнавать прогноз погоды и информацию из Википедии."
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Контакты или дополнительные ссылки -->
+        <TextView
+            android:id="@+id/tvContact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Контакты разработчика: ivanov@example.com"
+            android:textSize="16sp"
+            android:autoLink="email"
+            android:layout_marginBottom="12dp" />
+
+    </LinearLayout>
+</ScrollView>

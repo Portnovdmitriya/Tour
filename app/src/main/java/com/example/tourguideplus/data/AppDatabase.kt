@@ -12,7 +12,7 @@ import com.example.tourguideplus.data.model.PlaceEntity
         PlaceEntity::class
 
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -36,4 +36,5 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
     }
+
 }

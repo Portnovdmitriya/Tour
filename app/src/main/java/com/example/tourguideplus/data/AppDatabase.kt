@@ -8,13 +8,15 @@ import com.example.tourguideplus.data.dao.PlaceDao
 import com.example.tourguideplus.data.dao.RouteDao
 import com.example.tourguideplus.data.model.PlaceEntity
 import com.example.tourguideplus.data.model.RouteEntity
+import com.example.tourguideplus.data.model.RoutePlaceCrossRef
 
 @Database(
     entities = [
         PlaceEntity::class,
-        RouteEntity::class
+        RouteEntity::class,
+        RoutePlaceCrossRef::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

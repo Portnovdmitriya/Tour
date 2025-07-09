@@ -15,10 +15,9 @@ class RouteRepository(private val dao: RouteDao) {
         dao.getRouteWithPlacesById(id)
 
     // Используем новый метод DAO
-    suspend fun createRouteWithPlaces(
-        route: RouteEntity,
-        placeIds: List<Long>
-    ): Long = dao.insertRouteWithPlaces(route, placeIds)
+    suspend fun createRouteWithPlaces(route: RouteEntity, placeIds: List<Long>): Long {
+        return dao.insertRouteWithPlaces(route, placeIds)
+    }
 
     // И аналогично для обновления
     suspend fun updateRouteWithPlaces(

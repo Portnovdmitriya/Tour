@@ -35,21 +35,18 @@ interface RouteDao {
     @Query("SELECT * FROM routes WHERE id = :routeId")
     suspend fun getRouteWithPlacesById(routeId: Long): RouteWithPlaces?
 
-    // ← Вот этот метод
+
     @Transaction
-    suspend fun insertRouteWithPlaces(
-        route: RouteEntity,
-        placeIds: List<Long>
-    ): Long {
-        // 1) Вставляем (или обновляем) маршрут
-        val id = insertRoute(route)
-        // 2) Сначала чистим старые связи (для update), но для нового id их нет
-        deleteCrossRefsForRoute(id)
-        // 3) Вставляем все кросс-записи
+    suspend fun insertRouteWithPlaces(route: RouteEntity, placeIds: List<Long>): Long {
+
+        val newId = insertRoute(route)
+
+        deleteCrossRefsForRoute(newId)
+
         placeIds.forEach { pid ->
-            insertCrossRef(RoutePlaceCrossRef(id, pid))
+            insertCrossRef(RoutePlaceCrossRef(routeId = newId, placeId = pid))
         }
-        return id
+        return newId
     }
 
     @Transaction

@@ -16,7 +16,7 @@ import com.example.tourguideplus.data.model.RoutePlaceCrossRef
         RouteEntity::class,
         RoutePlaceCrossRef::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

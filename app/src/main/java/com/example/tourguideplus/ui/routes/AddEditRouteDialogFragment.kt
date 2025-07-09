@@ -57,8 +57,9 @@ class AddEditRouteDialogFragment : DialogFragment(R.layout.dialog_add_edit_route
                 return@setOnClickListener
             }
 
-            vm.createRoute(name, desc, selectedIds)
-            dismiss()
+            vm.createRoute(binding.etName.text.toString().trim(),
+                binding.etDesc.text.toString().trim().ifEmpty { null },
+                adapter.getSelectedPlaceIds())
         }
 
         // Отмена

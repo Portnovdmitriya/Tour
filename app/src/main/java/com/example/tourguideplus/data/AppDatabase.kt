@@ -4,8 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.tourguideplus.data.dao.CategoryDao
 import com.example.tourguideplus.data.dao.PlaceDao
 import com.example.tourguideplus.data.dao.RouteDao
+import com.example.tourguideplus.data.model.CategoryEntity
+import com.example.tourguideplus.data.model.PlaceCategoryCrossRef
 import com.example.tourguideplus.data.model.PlaceEntity
 import com.example.tourguideplus.data.model.RouteEntity
 import com.example.tourguideplus.data.model.RoutePlaceCrossRef
@@ -14,7 +17,9 @@ import com.example.tourguideplus.data.model.RoutePlaceCrossRef
     entities = [
         PlaceEntity::class,
         RouteEntity::class,
-        RoutePlaceCrossRef::class
+        RoutePlaceCrossRef::class,
+        CategoryEntity::class,
+        PlaceCategoryCrossRef::class
     ],
     version = 5,
     exportSchema = false
@@ -23,7 +28,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun placeDao(): PlaceDao
     abstract fun routeDao(): RouteDao
-
+    abstract fun categoryDao(): CategoryDao
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
 

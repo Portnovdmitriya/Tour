@@ -4,26 +4,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourguideplus.R
 import com.example.tourguideplus.data.model.CategoryEntity
 
 class SelectableCategoryAdapter(
-    private val categories: List<CategoryEntity>
-) : RecyclerView.Adapter<SelectableCategoryAdapter.VH>() {
+    private val onToggle: (CategoryEntity, Boolean) -> Unit
+) : ListAdapter<CategoryEntity, SelectableCategoryAdapter.VH>(DiffCallback()) {
 
-    private val selected = BooleanArray(categories.size)
+    private val selectedIds = mutableSetOf<Long>()
 
+    /** Задаёт изначально отмеченные категории */
     fun setSelectedIds(ids: List<Long>) {
-        categories.forEachIndexed { idx, cat ->
-            selected[idx] = cat.id in ids
-        }
+        selectedIds.clear()
+        selectedIds.addAll(ids)
         notifyDataSetChanged()
     }
-    /** Вернёт список выбранных ID */
-    fun getSelectedIds(): List<Long> =
-        categories.mapIndexedNotNull { idx, cat -> if (selected[idx]) cat.id else null }
+
+    /** Возвращает все отмеченные id */
+    fun getSelectedIds(): List<Long> = selectedIds.toList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val v = LayoutInflater.from(parent.context)
@@ -31,24 +32,30 @@ class SelectableCategoryAdapter(
         return VH(v)
     }
 
-    override fun getItemCount() = categories.size
-
     override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.bind(categories[position], selected[position]) { checked ->
-            selected[position] = checked
-        }
+        val cat = getItem(position)
+        holder.bind(cat, selectedIds.contains(cat.id))
     }
 
     inner class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val cb: CheckBox = itemView.findViewById(R.id.cb_category)
-        private val name: TextView = itemView.findViewById(R.id.tv_category_name)
-
-        fun bind(cat: CategoryEntity, isChecked: Boolean, onCheck: (Boolean)->Unit) {
-            name.text = cat.name
+        private val cb = itemView.findViewById<CheckBox>(R.id.cb_category)
+        fun bind(cat: CategoryEntity, isChecked: Boolean) {
+            cb.text = cat.name
+            cb.setOnCheckedChangeListener(null)
             cb.isChecked = isChecked
             cb.setOnCheckedChangeListener { _, checked ->
-                onCheck(checked)
+                if (checked) selectedIds.add(cat.id)
+                else selectedIds.remove(cat.id)
+                onToggle(cat, checked)
             }
         }
+    }
+
+    class DiffCallback : DiffUtil.ItemCallback<CategoryEntity>() {
+        override fun areItemsTheSame(a: CategoryEntity, b: CategoryEntity) =
+            a.id == b.id
+
+        override fun areContentsTheSame(a: CategoryEntity, b: CategoryEntity) =
+            a == b
     }
 }

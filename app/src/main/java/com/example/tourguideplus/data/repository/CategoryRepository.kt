@@ -21,4 +21,12 @@ class CategoryRepository(private val dao: CategoryDao) {
 
     suspend fun getPlaceWithCategories(placeId: Long): PlaceWithCategories? =
         dao.getPlaceWithCategories(placeId)
+
+    suspend fun update(cat: CategoryEntity) {
+        dao.updateCategory(cat)
+    }
+
+    suspend fun delete(cat: CategoryEntity) {
+        dao.deleteCategory(cat)
+    }
 }

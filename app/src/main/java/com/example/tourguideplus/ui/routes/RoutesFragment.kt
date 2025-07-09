@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.data.model.RouteWithPlaces
 import com.example.tourguideplus.databinding.FragmentRoutesBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.recyclerview.widget.DividerItemDecoration
 
 class RoutesFragment : Fragment() {
 
@@ -34,20 +36,29 @@ class RoutesFragment : Fragment() {
             RouteViewModelFactory(requireActivity().application as TourGuideApp)
         )[RouteViewModel::class.java]
 
-        // Инициализируем адаптер для RouteWithPlaces
-        adapter = RouteWithPlacesAdapter { routeWithPlaces ->
-            // TODO: открыть детальный экран маршрута
-            // findNavController().navigate(..., bundleOf("routeId" to routeWithPlaces.route.id))
-        }
-        binding.rvRoutes.adapter = adapter
-        binding.rvRoutes.addItemDecoration(
-            androidx.recyclerview.widget.DividerItemDecoration(
-                requireContext(),
-                androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
-            )
+        // Инициализируем адаптер с колбэками на клик и на удаление
+        adapter = RouteWithPlacesAdapter(
+            onClick = { rwp ->
+                // TODO: открыть детальный экран маршрута
+            },
+            onDelete = { rwp ->
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Удалить маршрут")
+                    .setMessage("Вы уверены, что хотите удалить «${rwp.route.name}»?")
+                    .setNegativeButton("Отмена", null)
+                    .setPositiveButton("Удалить") { _, _ ->
+                        vm.deleteRoute(rwp.route)
+                    }
+                    .show()
+            }
         )
 
-        // Подписываемся на новый LiveData
+        binding.rvRoutes.adapter = adapter
+        binding.rvRoutes.addItemDecoration(
+            DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+        )
+
+        // Подписываемся на список маршрутов и обновляем адаптер
         vm.routesWithPlaces.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
         }

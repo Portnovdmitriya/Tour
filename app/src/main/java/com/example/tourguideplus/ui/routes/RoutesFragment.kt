@@ -11,6 +11,9 @@ import com.example.tourguideplus.data.model.RouteWithPlaces
 import com.example.tourguideplus.databinding.FragmentRoutesBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
+import com.example.tourguideplus.R
 
 class RoutesFragment : Fragment() {
 
@@ -39,7 +42,10 @@ class RoutesFragment : Fragment() {
         // Инициализируем адаптер с колбэками на клик и на удаление
         adapter = RouteWithPlacesAdapter(
             onClick = { rwp ->
-                // TODO: открыть детальный экран маршрута
+                findNavController().navigate(
+                    R.id.action_routesFragment_to_routeDetailFragment,
+                    bundleOf("routeId" to rwp.route.id)
+                )
             },
             onDelete = { rwp ->
                 MaterialAlertDialogBuilder(requireContext())

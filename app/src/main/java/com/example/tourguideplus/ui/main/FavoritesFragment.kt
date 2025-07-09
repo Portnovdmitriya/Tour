@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tourguideplus.R
 import com.example.tourguideplus.TourGuideApp
+import com.example.tourguideplus.data.model.PlaceWithCategories
 import com.example.tourguideplus.databinding.FragmentFavoritesBinding
 
 class FavoritesFragment : Fragment() {
@@ -19,7 +21,7 @@ class FavoritesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: PlaceViewModel
-    private lateinit var adapter: PlaceAdapter
+    private lateinit var adapter: PlaceWithCategoriesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,30 +34,31 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Инициализируем ViewModel
+        // 1) ViewModel
         val factory = PlaceViewModelFactory(requireActivity().application as TourGuideApp)
         viewModel = ViewModelProvider(this, factory)
             .get(PlaceViewModel::class.java)
 
-        // Адаптер точно такой же
-        adapter = PlaceAdapter { place ->
-            // навигация в детали
-            val bundle = bundleOf("placeId" to place.id)
+        // 2) Адаптер PlaceWithCategoriesAdapter
+        adapter = PlaceWithCategoriesAdapter { pwc: PlaceWithCategories ->
+            // навигация в детали: передаём pwc.place.id
+            val bundle = bundleOf("placeId" to pwc.place.id)
             findNavController().navigate(
                 R.id.action_global_navigation_favorites_to_placeDetailFragment,
                 bundle
             )
         }
 
-        // RecyclerView
+        // 3) RecyclerView
+        binding.rvFavorites.layoutManager = LinearLayoutManager(requireContext())
         binding.rvFavorites.adapter = adapter
         binding.rvFavorites.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         )
 
-        // Наблюдаем все места, фильтруем избранное
-        viewModel.places.observe(viewLifecycleOwner) { list ->
-            val favs = list.filter { it.isFavorite }
+        // 4) Подписываемся на LiveData мест с категориями и фильтруем избранное
+        viewModel.placesWithCategories.observe(viewLifecycleOwner) { list ->
+            val favs = list.filter { it.place.isFavorite }
             adapter.submitList(favs)
         }
     }

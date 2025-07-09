@@ -3,6 +3,7 @@ package com.example.tourguideplus.data.repository
 import androidx.lifecycle.LiveData
 import com.example.tourguideplus.data.dao.PlaceDao
 import com.example.tourguideplus.data.model.PlaceEntity
+import com.example.tourguideplus.data.model.PlaceWithCategories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -26,6 +27,9 @@ class PlaceRepository(private val dao: PlaceDao) {
 
     suspend fun delete(place: PlaceEntity) =
         dao.deletePlace(place)
+
+    val allPlacesWithCategories: LiveData<List<PlaceWithCategories>> =
+        dao.getPlacesWithCategories()
 
     suspend fun fetchWikiSummary(title: String): String? = withContext(Dispatchers.IO) {
         try {

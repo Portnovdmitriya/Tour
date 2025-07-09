@@ -3,13 +3,15 @@ package com.example.tourguideplus.ui.main
 import androidx.lifecycle.*
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.data.model.PlaceEntity
+import com.example.tourguideplus.data.model.PlaceWithCategories
 import kotlinx.coroutines.launch
 
 class PlaceViewModel(application: TourGuideApp) : AndroidViewModel(application) {
 
     private val repo = application.placeRepository
     private val catRepo = application.categoryRepository
-
+    val placesWithCategories: LiveData<List<PlaceWithCategories>> =
+        repo.allPlacesWithCategories
     // Список всех мест
     val places: LiveData<List<PlaceEntity>> = repo.allPlaces
 

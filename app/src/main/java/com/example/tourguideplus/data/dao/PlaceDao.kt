@@ -3,6 +3,7 @@ package com.example.tourguideplus.data.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.tourguideplus.data.model.PlaceEntity
+import com.example.tourguideplus.data.model.PlaceWithCategories
 
 @Dao
 interface PlaceDao {
@@ -26,4 +27,8 @@ interface PlaceDao {
     /** Удалить */
     @Delete
     suspend fun deletePlace(place: PlaceEntity)
+
+    @Transaction
+    @Query("SELECT * FROM places ORDER BY name ASC")
+    fun getPlacesWithCategories(): LiveData<List<PlaceWithCategories>>
 }

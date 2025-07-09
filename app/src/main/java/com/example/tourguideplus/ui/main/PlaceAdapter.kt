@@ -8,41 +8,38 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourguideplus.R
-import com.example.tourguideplus.data.model.PlaceEntity
+import com.example.tourguideplus.data.model.PlaceWithCategories
 
-class PlaceAdapter(
-    private val onItemClick: (PlaceEntity) -> Unit
-) : ListAdapter<PlaceEntity, PlaceAdapter.PlaceViewHolder>(PlaceDiffCallback()) {
+class PlaceWithCategoriesAdapter(
+    private val onItemClick: (PlaceWithCategories) -> Unit
+) : ListAdapter<PlaceWithCategories, PlaceWithCategoriesAdapter.VH>(Diff()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceViewHolder {
-        val view = LayoutInflater.from(parent.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_place, parent, false)
-        return PlaceViewHolder(view, onItemClick)
+        return VH(v, onItemClick)
     }
 
-    override fun onBindViewHolder(holder: PlaceViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: VH, pos: Int) {
+        holder.bind(getItem(pos))
     }
 
-    class PlaceViewHolder(
-        itemView: View,
-        private val onItemClick: (PlaceEntity) -> Unit
-    ) : RecyclerView.ViewHolder(itemView) {
-        private val nameText: TextView = itemView.findViewById(R.id.tv_place_name)
-        private val categoryText: TextView = itemView.findViewById(R.id.tv_place_category)
+    class VH(itemView: View, val onItemClick: (PlaceWithCategories) -> Unit)
+        : RecyclerView.ViewHolder(itemView) {
+        private val tvName = itemView.findViewById<TextView>(R.id.tv_place_name)
+        private val tvCats = itemView.findViewById<TextView>(R.id.tv_place_category)
 
-        fun bind(place: PlaceEntity) {
-            nameText.text = place.name
-            categoryText.text = place.category
-            itemView.setOnClickListener { onItemClick(place) }
+        fun bind(pwc: PlaceWithCategories) {
+            tvName.text = pwc.place.name
+            tvCats.text = pwc.categories.joinToString(", ") { it.name }
+            itemView.setOnClickListener { onItemClick(pwc) }
         }
     }
 
-    class PlaceDiffCallback : DiffUtil.ItemCallback<PlaceEntity>() {
-        override fun areItemsTheSame(old: PlaceEntity, new: PlaceEntity) =
-            old.id == new.id
-
-        override fun areContentsTheSame(old: PlaceEntity, new: PlaceEntity) =
-            old == new
+    class Diff : DiffUtil.ItemCallback<PlaceWithCategories>() {
+        override fun areItemsTheSame(a: PlaceWithCategories, b: PlaceWithCategories) =
+            a.place.id == b.place.id
+        override fun areContentsTheSame(a: PlaceWithCategories, b: PlaceWithCategories) =
+            a == b
     }
 }

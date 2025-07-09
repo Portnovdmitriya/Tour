@@ -8,10 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.os.bundleOf
 import com.example.tourguideplus.R
 import com.example.tourguideplus.TourGuideApp
+import com.example.tourguideplus.data.model.PlaceWithCategories
 import com.example.tourguideplus.databinding.FragmentPlacesBinding
-import androidx.core.os.bundleOf
 
 class PlacesFragment : Fragment() {
 
@@ -19,7 +21,7 @@ class PlacesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: PlaceViewModel
-    private lateinit var adapter: PlaceAdapter
+    private lateinit var adapter: PlaceWithCategoriesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,28 +32,32 @@ class PlacesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // ViewModel
+        super.onViewCreated(view, savedInstanceState)
+
+        // 1) Инициализируем ViewModel
         val factory = PlaceViewModelFactory(requireActivity().application as TourGuideApp)
         viewModel = ViewModelProvider(this, factory)
             .get(PlaceViewModel::class.java)
 
-        // Adapter
-        adapter = PlaceAdapter { place ->
-            val bundle = bundleOf("placeId" to place.id)
+        // 2) Настраиваем адаптер PlaceWithCategoriesAdapter
+        adapter = PlaceWithCategoriesAdapter { pwc: PlaceWithCategories ->
+            // pwc.place — это ваша PlaceEntity
+            val bundle = bundleOf("placeId" to pwc.place.id)
             findNavController().navigate(
                 R.id.action_placesFragment_to_placeDetailFragment,
                 bundle
             )
         }
 
-        // RecyclerView
+        // 3) RecyclerView
+        binding.rvPlaces.layoutManager = LinearLayoutManager(requireContext())
         binding.rvPlaces.adapter = adapter
         binding.rvPlaces.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         )
 
-        // Наблюдаем данные
-        viewModel.places.observe(viewLifecycleOwner) { list ->
+        // 4) Подписываемся на LiveData с местами и их категориями
+        viewModel.placesWithCategories.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
         }
     }

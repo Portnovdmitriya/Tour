@@ -3,6 +3,7 @@ package com.example.tourguideplus.ui.main
 import androidx.lifecycle.*
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.data.model.CategoryEntity
+import com.example.tourguideplus.data.model.PlaceWithCategories
 import kotlinx.coroutines.launch
 
 class CategoryViewModel(app: TourGuideApp) : AndroidViewModel(app) {
@@ -17,6 +18,8 @@ class CategoryViewModel(app: TourGuideApp) : AndroidViewModel(app) {
     fun assignToPlace(placeId: Long, categoryIds: List<Long>) = viewModelScope.launch {
         repo.assignCategories(placeId, categoryIds)
     }
+    suspend fun getPlaceWithCategories(placeId: Long): PlaceWithCategories? =
+        repo.getPlaceWithCategories(placeId)
 }
 
 class CategoryViewModelFactory(

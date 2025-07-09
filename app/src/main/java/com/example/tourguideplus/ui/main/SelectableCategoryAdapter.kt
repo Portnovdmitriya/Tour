@@ -15,6 +15,12 @@ class SelectableCategoryAdapter(
 
     private val selected = BooleanArray(categories.size)
 
+    fun setSelectedIds(ids: List<Long>) {
+        categories.forEachIndexed { idx, cat ->
+            selected[idx] = cat.id in ids
+        }
+        notifyDataSetChanged()
+    }
     /** Вернёт список выбранных ID */
     fun getSelectedIds(): List<Long> =
         categories.mapIndexedNotNull { idx, cat -> if (selected[idx]) cat.id else null }

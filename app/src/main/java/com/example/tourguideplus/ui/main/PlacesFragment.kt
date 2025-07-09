@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.core.os.bundleOf
 import com.example.tourguideplus.R
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.data.model.PlaceWithCategories
@@ -35,28 +35,30 @@ class PlacesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 1) Инициализируем ViewModel
-        val factory = PlaceViewModelFactory(requireActivity().application as TourGuideApp)
-        viewModel = ViewModelProvider(this, factory)
-            .get(PlaceViewModel::class.java)
+        val app = requireActivity().application as TourGuideApp
+        viewModel = ViewModelProvider(
+            this,
+            PlaceViewModelFactory(app)
+        )[PlaceViewModel::class.java]
 
         // 2) Настраиваем адаптер PlaceWithCategoriesAdapter
         adapter = PlaceWithCategoriesAdapter { pwc: PlaceWithCategories ->
-            // pwc.place — это ваша PlaceEntity
-            val bundle = bundleOf("placeId" to pwc.place.id)
+            // При клике передаём в аргументы ID места
+            val args = bundleOf("placeId" to pwc.place.id)
             findNavController().navigate(
                 R.id.action_placesFragment_to_placeDetailFragment,
-                bundle
+                args
             )
         }
 
-        // 3) RecyclerView
+        // 3) Настраиваем RecyclerView
         binding.rvPlaces.layoutManager = LinearLayoutManager(requireContext())
         binding.rvPlaces.adapter = adapter
         binding.rvPlaces.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         )
 
-        // 4) Подписываемся на LiveData с местами и их категориями
+        // 4) Подписываемся на LiveData мест с категориями
         viewModel.placesWithCategories.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
         }

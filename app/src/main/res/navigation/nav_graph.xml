@@ -45,4 +45,17 @@
         android:id="@+id/navigation_routes"
         android:name="com.example.tourguideplus.ui.routes.RoutesFragment"
         android:label="Маршруты" />
+    <fragment
+        android:id="@+id/routeDetailFragment"
+        android:name="com.example.tourguideplus.ui.routes.RouteDetailFragment"
+        android:label="Детали маршрута"
+        tools:layout="@layout/fragment_route_detail">
+        <argument
+            android:name="routeId"
+            app:argType="long" />
+    </fragment>
+
+    <action
+        android:id="@+id/action_routesFragment_to_routeDetailFragment"
+        app:destination="@id/routeDetailFragment" />
 </navigation>

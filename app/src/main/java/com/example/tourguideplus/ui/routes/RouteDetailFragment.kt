@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.databinding.FragmentRouteDetailBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -46,19 +46,18 @@ class RouteDetailFragment : Fragment() {
                 .setMessage("Убрать «${place.name}» из маршрута?")
                 .setNegativeButton("Отмена", null)
                 .setPositiveButton("Да") { _, _ ->
-                    // Перезапись: получаем текущий, убираем id и сохраняем
                     val current = vm.selected.value
                     if (current != null) {
                         val newIds = current.places.map { it.id }.toMutableList()
                         newIds.remove(place.id)
-                        vm.updateRoute(
-                            current.route,
-                            newIds
-                        )
+                        vm.updateRoute(current.route, newIds)
                     }
                 }
                 .show()
         }
+
+
+        binding.rvPlacesInRoute.layoutManager = LinearLayoutManager(requireContext())
         binding.rvPlacesInRoute.adapter = placeAdapter
         binding.rvPlacesInRoute.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)

@@ -21,8 +21,8 @@ class RouteViewModel(app: TourGuideApp) : AndroidViewModel(app) {
     }
 
     // Создать новый маршрут вместе с местами
-    fun createRoute(name: String, description: String?, placeIds: List<Long>) = viewModelScope.launch {
-        val route = RouteEntity(name = name, description = description)
+    fun createRoute(name: String, desc: String?, placeIds: List<Long>) = viewModelScope.launch {
+        val route = RouteEntity(name = name, description = desc)
         repo.createRouteWithPlaces(route, placeIds)
     }
 

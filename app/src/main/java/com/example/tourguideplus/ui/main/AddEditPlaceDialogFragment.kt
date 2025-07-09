@@ -1,17 +1,25 @@
 package com.example.tourguideplus.ui.main
 
+import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.data.model.PlaceEntity
 import com.example.tourguideplus.databinding.DialogAddEditPlaceBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.File
 
 class AddEditPlaceDialogFragment(
     private val existingPlace: PlaceEntity? = null
@@ -25,12 +33,27 @@ class AddEditPlaceDialogFragment(
 
     companion object {
         private const val REQUEST_PICK_IMAGE = 1001
+        private const val REQUEST_TAKE_PHOTO = 1002
     }
+
+    // Лаунчер для запроса CAMERA
+    private val requestCameraPermission =
+        registerForActivityResult(RequestPermission()) { granted ->
+            if (granted) {
+                takePhotoInternal()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Без доступа к камере сделать фото нельзя",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogAddEditPlaceBinding.inflate(layoutInflater)
 
-        // ViewModel
+        // Инициализация ViewModel
         val factory = PlaceViewModelFactory(requireActivity().application as TourGuideApp)
         viewModel = ViewModelProvider(this, factory).get(PlaceViewModel::class.java)
 
@@ -45,20 +68,24 @@ class AddEditPlaceDialogFragment(
             }
         }
 
-        // Выбор фото
+        // Кнопка «Выбрать фото»
         binding.btnChoosePhoto.setOnClickListener {
-            startActivityForResult(
-                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
-                REQUEST_PICK_IMAGE
-            )
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Добавить фото")
+                .setItems(arrayOf("Из галереи", "С камеры")) { _, which ->
+                    when (which) {
+                        0 -> pickFromGallery()
+                        1 -> onCameraSelected()
+                    }
+                }
+                .show()
         }
 
-        // Сохранить
+        // Кнопка «Сохранить»
         binding.btnSave.setOnClickListener {
-            val name = binding.etName.text.toString().trim()
+            val name     = binding.etName.text.toString().trim()
             val category = binding.etCategory.text.toString().trim()
-            val desc = binding.etDescription.text.toString().trim()
-
+            val desc     = binding.etDescription.text.toString().trim()
             if (name.isEmpty()) {
                 binding.etName.error = "Введите название"
                 return@setOnClickListener
@@ -73,21 +100,20 @@ class AddEditPlaceDialogFragment(
             }
 
             val place = PlaceEntity(
-                id = existingPlace?.id ?: 0L,
-                name = name,
-                category = category,
+                id          = existingPlace?.id ?: 0L,
+                name        = name,
+                category    = category,
                 description = desc,
-                latitude = existingPlace?.latitude,
-                longitude = existingPlace?.longitude,
-                photoUri = photoUri?.toString()
+                latitude    = existingPlace?.latitude,
+                longitude   = existingPlace?.longitude,
+                photoUri    = photoUri?.toString()
             )
-
             if (existingPlace == null) viewModel.addPlace(place)
             else viewModel.updatePlace(place)
             dismiss()
         }
 
-        // Отмена
+        // Кнопка «Отмена»
         binding.btnCancel.setOnClickListener { dismiss() }
 
         return MaterialAlertDialogBuilder(requireContext())
@@ -95,18 +121,78 @@ class AddEditPlaceDialogFragment(
             .create()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_PICK_IMAGE && resultCode == Activity.RESULT_OK) {
-            data?.data?.let { uri ->
-                // захватываем persistable разрешения
-                val takeFlags = data.flags and
-                        (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                requireContext().contentResolver.takePersistableUriPermission(uri, takeFlags)
+    private fun pickFromGallery() {
+        val intent = Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        ).apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        startActivityForResult(intent, REQUEST_PICK_IMAGE)
+    }
 
-                photoUri = uri
-                binding.ivPhotoPreview.setImageURI(photoUri)
+    private fun onCameraSelected() {
+        // Проверяем разрешение
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                takePhotoInternal()
             }
-        } else super.onActivityResult(requestCode, resultCode, data)
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Нужно разрешение")
+                    .setMessage("Чтобы сделать фото, разрешите доступ к камере")
+                    .setPositiveButton("OK") { _, _ ->
+                        requestCameraPermission.launch(Manifest.permission.CAMERA)
+                    }
+                    .show()
+            }
+            else -> {
+                requestCameraPermission.launch(Manifest.permission.CAMERA)
+            }
+        }
+    }
+
+    private fun takePhotoInternal() {
+        // Готовим файл и URI через FileProvider
+        val imagesDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val file = File(imagesDir, "IMG_${System.currentTimeMillis()}.jpg")
+        photoUri = FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.provider",
+            file
+        )
+        val camIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+            putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+            addFlags(
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            )
+        }
+        startActivityForResult(camIntent, REQUEST_TAKE_PHOTO)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_PICK_IMAGE -> {
+                    data?.data?.let { uri ->
+                        requireContext().contentResolver.takePersistableUriPermission(
+                            uri,
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        )
+                        photoUri = uri
+                    }
+                }
+                REQUEST_TAKE_PHOTO -> {
+                                    }
+            }
+            binding.ivPhotoPreview.setImageURI(photoUri)
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onDestroyView() {

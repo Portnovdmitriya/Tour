@@ -54,6 +54,11 @@
             android:name="routeId"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/categoriesFragment"
+        android:name="com.example.tourguideplus.ui.main.CategoriesFragment"
+        android:label="Категории"
+        tools:layout="@layout/fragment_categories" />
 
     <action
         android:id="@+id/action_routesFragment_to_routeDetailFragment"

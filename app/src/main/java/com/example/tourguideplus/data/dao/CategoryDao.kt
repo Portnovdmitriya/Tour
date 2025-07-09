@@ -23,5 +23,11 @@ interface CategoryDao {
     @Transaction
     @Query("SELECT * FROM places WHERE id = :placeId")
     suspend fun getPlaceWithCategories(placeId: Long): PlaceWithCategories?
+
+    @Update
+    suspend fun updateCategory(cat: CategoryEntity)
+
+    @Delete
+    suspend fun deleteCategory(cat: CategoryEntity)
 }
 

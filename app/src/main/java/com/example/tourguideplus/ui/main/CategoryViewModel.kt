@@ -20,6 +20,14 @@ class CategoryViewModel(app: TourGuideApp) : AndroidViewModel(app) {
     }
     suspend fun getPlaceWithCategories(placeId: Long): PlaceWithCategories? =
         repo.getPlaceWithCategories(placeId)
+
+    fun updateCategory(cat: CategoryEntity) = viewModelScope.launch {
+        repo.update(cat)
+    }
+
+    fun deleteCategory(cat: CategoryEntity) = viewModelScope.launch {
+        repo.delete(cat)
+    }
 }
 
 class CategoryViewModelFactory(

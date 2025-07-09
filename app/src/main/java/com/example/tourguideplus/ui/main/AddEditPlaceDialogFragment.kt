@@ -15,11 +15,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.data.model.PlaceEntity
+import com.example.tourguideplus.data.model.PlaceWithCategories
 import com.example.tourguideplus.databinding.DialogAddEditPlaceBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import java.io.File
 
 class AddEditPlaceDialogFragment(
@@ -40,7 +43,6 @@ class AddEditPlaceDialogFragment(
         private const val REQUEST_TAKE_PHOTO = 1002
     }
 
-    // Лаунчер для CAMERA permission
     private val requestCameraPermission =
         registerForActivityResult(RequestPermission()) { granted ->
             if (granted) takePhotoInternal()
@@ -52,15 +54,17 @@ class AddEditPlaceDialogFragment(
         }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // 1) Inflate binding
         _binding = DialogAddEditPlaceBinding.inflate(layoutInflater)
 
-
+        // 2) Инициализируем ViewModel’ы
         val app = requireActivity().application as TourGuideApp
         placeVm = ViewModelProvider(this, PlaceViewModelFactory(app))
             .get(PlaceViewModel::class.java)
         categoryVm = ViewModelProvider(this, CategoryViewModelFactory(app))
             .get(CategoryViewModel::class.java)
 
+        // 3) Заполняем поля, если редактируем
         existingPlace?.let {
             binding.etName.setText(it.name)
             binding.etDescription.setText(it.description)
@@ -70,17 +74,32 @@ class AddEditPlaceDialogFragment(
             }
         }
 
-
+        // 4) Настраиваем RecyclerView для категорий
         categoryAdapter = SelectableCategoryAdapter(emptyList())
         binding.rvCategories.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCategories.adapter = categoryAdapter
 
+        // 5) Подписываемся на справочник категорий (через this, а не viewLifecycleOwner)
         categoryVm.allCategories.observe(this) { cats ->
+            // Пересоздаём адаптер со свежим списком
             categoryAdapter = SelectableCategoryAdapter(cats)
             binding.rvCategories.adapter = categoryAdapter
+
+            // Если редактируем — подгружаем уже сохранённые категории этого места
+            existingPlace?.let { place ->
+                lifecycleScope.launch {
+                    val pwc: PlaceWithCategories? =
+                        categoryVm.getPlaceWithCategories(place.id)
+                    pwc?.categories
+                        ?.map { it.id }
+                        ?.let { ids ->
+                            categoryAdapter.setSelectedIds(ids)
+                        }
+                }
+            }
         }
 
-
+        // 6) «+» — добавление новой категории
         binding.btnAddCategory.setOnClickListener {
             val newName = binding.etNewCategory.text.toString().trim()
             if (newName.isEmpty()) {
@@ -91,7 +110,7 @@ class AddEditPlaceDialogFragment(
             }
         }
 
-
+        // 7) Кнопка «Добавить фото»
         binding.btnChoosePhoto.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Добавить фото")
@@ -101,7 +120,7 @@ class AddEditPlaceDialogFragment(
                 .show()
         }
 
-
+        // 8) Кнопка «Сохранить»
         binding.btnSave.setOnClickListener {
             val name = binding.etName.text.toString().trim()
             val desc = binding.etDescription.text.toString().trim()
@@ -109,39 +128,47 @@ class AddEditPlaceDialogFragment(
                 binding.etName.error = "Введите название"
                 return@setOnClickListener
             }
-            // Собираем PlaceEntity (поле category больше не используется)
-            val place = PlaceEntity(
-                id          = existingPlace?.id ?: 0L,
-                name        = name,
-                category    = "",
-                description = desc,
-                latitude    = existingPlace?.latitude,
-                longitude   = existingPlace?.longitude,
-                photoUri    = photoUri?.toString()
-            )
-            // Собираем выбранные категории
             val selIds = categoryAdapter.getSelectedIds()
             if (selIds.isEmpty()) {
-                Toast.makeText(requireContext(),
-                    "Выберите хотя бы одну категорию", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Выберите хотя бы одну категорию",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
+
+            val place = PlaceEntity(
+                id = existingPlace?.id ?: 0L,
+                name = name,
+                category = "",
+                description = desc,
+                latitude = existingPlace?.latitude,
+                longitude = existingPlace?.longitude,
+                photoUri = photoUri?.toString()
+            )
 
             if (existingPlace == null) {
                 placeVm.createPlaceWithCategories(place, selIds)
             } else {
-                placeVm.updatePlaceWithCategories(place.copy(id = existingPlace.id), selIds)
+                placeVm.updatePlaceWithCategories(place, selIds)
             }
+            Toast.makeText(requireContext(),
+                "Saved category IDs: $selIds",
+                Toast.LENGTH_SHORT).show()
             dismiss()
         }
 
-        // Отмена
+        // 9) Кнопка «Отмена»
         binding.btnCancel.setOnClickListener { dismiss() }
 
+        // 10) Создаём диалог
         return MaterialAlertDialogBuilder(requireContext())
             .setView(binding.root)
             .create()
     }
+
+
 
     private fun pickFromGallery() {
         val intent = Intent(
@@ -156,12 +183,14 @@ class AddEditPlaceDialogFragment(
             ContextCompat.checkSelfPermission(
                 requireContext(), Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED -> takePhotoInternal()
-            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Нужен доступ")
-                .setMessage("Разрешите камеру для создания фото")
-                .setPositiveButton("OK") { _, _ ->
-                    requestCameraPermission.launch(Manifest.permission.CAMERA)
-                }.show()
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ->
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Нужен доступ")
+                    .setMessage("Разрешите доступ к камере")
+                    .setPositiveButton("OK") { _, _ ->
+                        requestCameraPermission.launch(Manifest.permission.CAMERA)
+                    }
+                    .show()
             else -> requestCameraPermission.launch(Manifest.permission.CAMERA)
         }
     }
@@ -176,8 +205,10 @@ class AddEditPlaceDialogFragment(
         )
         val cam = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
             putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            addFlags(
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            )
         }
         startActivityForResult(cam, REQUEST_TAKE_PHOTO)
     }
@@ -194,7 +225,9 @@ class AddEditPlaceDialogFragment(
                 REQUEST_TAKE_PHOTO -> { /* photoUri уже установлен */ }
             }
             binding.ivPhotoPreview.setImageURI(photoUri)
-        } else super.onActivityResult(requestCode, resultCode, data)
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onDestroyView() {

@@ -7,25 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope            // <- для корутин
-import com.example.tourguideplus.TourGuideApp
-import com.example.tourguideplus.data.model.PlaceWithCategories  // <- новая модель
-import com.example.tourguideplus.databinding.FragmentPlaceDetailBinding
-import kotlinx.coroutines.launch                // <- для launch
-import android.content.Intent
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.tourguideplus.TourGuideApp
+import com.example.tourguideplus.data.model.PlaceEntity
+import com.example.tourguideplus.databinding.FragmentPlaceDetailBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PlaceDetailFragment : Fragment() {
+
     private var _binding: FragmentPlaceDetailBinding? = null
     private val binding get() = _binding!!
 
-    // заменяем ViewModel одной только сущности на две:
-    private lateinit var placeVm: PlaceViewModel
-    private lateinit var catVm: CategoryViewModel    // <- для загрузки связей
-
-    private var photoUri: Uri? = null
+    private lateinit var viewModel: PlaceViewModel
+    private var currentPlace: PlaceEntity? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,31 +31,63 @@ class PlaceDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val app = requireActivity().application as TourGuideApp
-        val placeVm = ViewModelProvider(this, PlaceViewModelFactory(app))
-            .get(PlaceViewModel::class.java)
-        val catVm = ViewModelProvider(this, CategoryViewModelFactory(app))
-            .get(CategoryViewModel::class.java)
 
+        // Инициализируем ViewModel
+        val app = requireActivity().application as TourGuideApp
+        viewModel = ViewModelProvider(this, PlaceViewModelFactory(app))
+            .get(PlaceViewModel::class.java)
+
+        // Получаем placeId из аргументов
         val placeId = arguments?.getLong("placeId") ?: return
 
-        // Загружаем полностью place + его категории
-        lifecycleScope.launch {
-            val pwc = catVm.getPlaceWithCategories(placeId)
-            if (pwc != null) {
-                // Отладочный тост
-                Toast.makeText(requireContext(),
-                    "Detail categories: ${pwc.categories.map { it.name }}",
-                    Toast.LENGTH_LONG).show()
+        // Загружаем PlaceEntity
+        viewModel.loadPlaceById(placeId)
 
-                binding.tvName.text = pwc.place.name
-                binding.tvCategory.text = pwc.categories.joinToString(", ") { it.name }
-                binding.tvDescription.text = pwc.place.description
-                pwc.place.photoUri?.let { uri ->
-                    binding.ivPhoto.setImageURI(Uri.parse(uri))
-                }
+        // Наблюдаем за выбранным местом
+        viewModel.selectedPlace.observe(viewLifecycleOwner) { place ->
+            place ?: return@observe
+            currentPlace = place
+
+            // Заполняем UI
+            binding.tvName.text        = place.name
+            binding.tvCategory.text    = place.category   // если не используете категории, можно убрать
+            binding.tvDescription.text = place.description
+            place.photoUri?.let { uriStr ->
+                binding.ivPhoto.setImageURI(Uri.parse(uriStr))
+            }
+
+            // Обновляем текст кнопки «Избранное»
+            binding.btnFavorite.text = if (place.isFavorite)
+                "Убрать из избранного"
+            else
+                "Добавить в избранное"
+        }
+
+        // Обработчик «Избранное»
+        binding.btnFavorite.setOnClickListener {
+            currentPlace?.let { place ->
+                val updated = place.copy(isFavorite = !place.isFavorite)
+                viewModel.updatePlace(updated)
             }
         }
+
+        // Обработчик «Удалить»
+        binding.btnDelete.setOnClickListener {
+            currentPlace?.let { place ->
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Удаление места")
+                    .setMessage("Вы уверены, что хотите удалить «${place.name}»?")
+                    .setNegativeButton("Отмена", null)
+                    .setPositiveButton("Удалить") { _, _ ->
+                        viewModel.deletePlace(place)
+                        // Возвращаемся назад к списку
+                        findNavController().popBackStack()
+                    }
+                    .show()
+            }
+        }
+
+        // Остальное (карта, Wikipedia) оставляем без изменений…
     }
 
     override fun onDestroyView() {

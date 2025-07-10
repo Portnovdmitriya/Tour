@@ -9,9 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.content.ContextCompat
@@ -32,13 +29,10 @@ class AddEditPlaceDialogFragment(
     private val existingPlace: PlaceEntity? = null
 ) : DialogFragment() {
 
-    private var _binding: DialogAddEditPlaceBinding? = null
-    private val binding get() = _binding!!
-
+    private lateinit var binding: DialogAddEditPlaceBinding
     private lateinit var placeVm: PlaceViewModel
     private lateinit var categoryVm: CategoryViewModel
     private lateinit var categoryAdapter: SelectableCategoryAdapter
-
     private var photoUri: Uri? = null
 
     companion object {
@@ -56,34 +50,28 @@ class AddEditPlaceDialogFragment(
             ).show()
         }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = DialogAddEditPlaceBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // 1) Inflate binding
+        binding = DialogAddEditPlaceBinding.inflate(layoutInflater)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // 1) ViewModels
+        // 2) Инициализируем ViewModel-ы
         val app = requireActivity().application as TourGuideApp
         placeVm = ViewModelProvider(this, PlaceViewModelFactory(app))
             .get(PlaceViewModel::class.java)
         categoryVm = ViewModelProvider(this, CategoryViewModelFactory(app))
             .get(CategoryViewModel::class.java)
 
-        // 2) RecyclerView + Adapter
-        // 4) Настраиваем RecyclerView для категорий
-        categoryAdapter = SelectableCategoryAdapter { _, _ -> /* колбек нам не нужен */ }
-        binding.rvCategories.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvCategories.adapter = categoryAdapter
+        // 3) Настраиваем RecyclerView для категорий
+        categoryAdapter = SelectableCategoryAdapter { _, _ -> /* нет дополнительной логики */ }
+        binding.rvCategories.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = categoryAdapter
+        }
 
-// 5) Подписываемся на общий список категорий
-        categoryVm.allCategories.observe(viewLifecycleOwner) { cats ->
-            // вот теперь у нас есть submitList
+        // 4) Подписываемся на список категорий
+        categoryVm.allCategories.observe(this) { cats ->
             categoryAdapter.submitList(cats)
-
-            // если редактируем — подгружаем уже сохранённые категории этого места
+            // Если редактируем — выставляем уже связанные
             existingPlace?.let { place ->
                 lifecycleScope.launch {
                     val pwc: PlaceWithCategories? =
@@ -95,7 +83,7 @@ class AddEditPlaceDialogFragment(
             }
         }
 
-        // 4) Заполняем поля, если редактируем
+        // 5) Заполняем поля, если это редактирование
         existingPlace?.let {
             binding.etName.setText(it.name)
             binding.etNewCategory.isEnabled = false
@@ -106,18 +94,18 @@ class AddEditPlaceDialogFragment(
             }
         }
 
-        // 5) Добавление новой категории
+        // 6) Добавление новой категории
         binding.btnAddCategory.setOnClickListener {
-            val newName = binding.etNewCategory.text.toString().trim()
-            if (newName.isEmpty()) {
+            val name = binding.etNewCategory.text.toString().trim()
+            if (name.isEmpty()) {
                 binding.etNewCategory.error = "Введите название категории"
             } else {
-                categoryVm.addCategory(newName)
+                categoryVm.addCategory(name)
                 binding.etNewCategory.text?.clear()
             }
         }
 
-        // 6) Фото из галереи / камеры
+        // 7) Фото из галереи / камеры
         binding.btnChoosePhoto.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Добавить фото")
@@ -127,7 +115,7 @@ class AddEditPlaceDialogFragment(
                 .show()
         }
 
-        // 7) Сохранить место
+        // 8) Сохранить место
         binding.btnSave.setOnClickListener {
             val name = binding.etName.text.toString().trim()
             val desc = binding.etDescription.text.toString().trim()
@@ -135,11 +123,11 @@ class AddEditPlaceDialogFragment(
                 binding.etName.error = "Введите название"
                 return@setOnClickListener
             }
-            val selIds = categoryAdapter.getSelectedIds()
-            if (selIds.isEmpty()) {
+            val sel = categoryAdapter.getSelectedIds()
+            if (sel.isEmpty()) {
                 Toast.makeText(
                     requireContext(),
-                    "Выберите хотя бы одну категорию",
+                    "Выберите категорию",
                     Toast.LENGTH_SHORT
                 ).show()
                 return@setOnClickListener
@@ -153,29 +141,29 @@ class AddEditPlaceDialogFragment(
                 longitude = existingPlace?.longitude,
                 photoUri = photoUri?.toString()
             )
-            if (existingPlace == null) {
-                placeVm.createPlaceWithCategories(place, selIds)
-            } else {
-                placeVm.updatePlaceWithCategories(place.copy(id = existingPlace.id), selIds)
-            }
-            Toast.makeText(requireContext(),
-                "Saved category IDs: $selIds",
-                Toast.LENGTH_SHORT).show()
+            if (existingPlace == null)
+                placeVm.createPlaceWithCategories(place, sel)
+            else
+                placeVm.updatePlaceWithCategories(place.copy(id = existingPlace.id), sel)
+
+            Toast.makeText(
+                requireContext(),
+                "Saved category IDs: $sel",
+                Toast.LENGTH_SHORT
+            ).show()
             dismiss()
         }
 
-        // 8) Отмена
+        // 9) Отмена
         binding.btnCancel.setOnClickListener { dismiss() }
-    }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // просто оборачиваем уже инфлейченный view
+        // 10) Собираем и возвращаем диалог
         return MaterialAlertDialogBuilder(requireContext())
             .setView(binding.root)
             .create()
     }
 
-    // ==== Методы для фото ====
+    // ==== Методы для работы с фото ====
 
     private fun pickFromGallery() {
         val intent = Intent(
@@ -199,7 +187,8 @@ class AddEditPlaceDialogFragment(
                         requestCameraPermission.launch(Manifest.permission.CAMERA)
                     }
                     .show()
-            else -> requestCameraPermission.launch(Manifest.permission.CAMERA)
+            else ->
+                requestCameraPermission.launch(Manifest.permission.CAMERA)
         }
     }
 
@@ -230,14 +219,9 @@ class AddEditPlaceDialogFragment(
                     )
                     photoUri = uri
                 }
-                REQUEST_TAKE_PHOTO -> { /* photoUri уже установлен */ }
+                REQUEST_TAKE_PHOTO -> { /* photoUri уже есть */ }
             }
             binding.ivPhotoPreview.setImageURI(photoUri)
         } else super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

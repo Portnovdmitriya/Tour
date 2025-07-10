@@ -219,7 +219,7 @@ class AddEditPlaceDialogFragment(
                     )
                     photoUri = uri
                 }
-                REQUEST_TAKE_PHOTO -> { /* photoUri уже есть */ }
+                REQUEST_TAKE_PHOTO -> { }
             }
             binding.ivPhotoPreview.setImageURI(photoUri)
         } else super.onActivityResult(requestCode, resultCode, data)

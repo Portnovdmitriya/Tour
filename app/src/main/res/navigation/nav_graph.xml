@@ -26,14 +26,14 @@
     </fragment>
     <!-- Фрагмент для избранного -->
     <fragment
-        android:id="@+id/navigation_favorites"
+        android:id="@+id/favoritesFragment"
         android:name="com.example.tourguideplus.ui.main.FavoritesFragment"
         android:label="Избранное"/>
     <action
         android:id="@+id/action_global_navigation_favorites_to_placeDetailFragment"
         app:destination="@id/placeDetailFragment" />
     <fragment
-        android:id="@+id/navigation_weather"
+        android:id="@+id/weatherFragment"
         android:name="com.example.tourguideplus.ui.weather.WeatherFragment"
         android:label="Погода" />
     <fragment
@@ -42,7 +42,7 @@
         android:label="Справка"
         tools:layout="@layout/fragment_help" />
     <fragment
-        android:id="@+id/navigation_routes"
+        android:id="@+id/routesFragment"
         android:name="com.example.tourguideplus.ui.routes.RoutesFragment"
         android:label="Маршруты" />
     <fragment

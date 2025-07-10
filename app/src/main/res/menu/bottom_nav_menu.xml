@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/placesFragment"
+    <item android:id="@+id/placesFragment"
         android:icon="@drawable/ic_place"
-        android:title="Места" />
-    <item
-        android:id="@+id/navigation_routes"
+        android:title="Места"/>
+    <item android:id="@+id/routesFragment"
         android:icon="@drawable/ic_route"
-        android:title="Маршруты" />
-    <item
-        android:id="@+id/navigation_favorites"
+        android:title="Маршруты"/>
+    <item android:id="@+id/favoritesFragment"
         android:icon="@drawable/ic_favorite"
-        android:title="Избранное" />
-    <item
-        android:id="@+id/navigation_weather"
+        android:title="Избранное"/>
+    <item android:id="@+id/weatherFragment"
         android:icon="@drawable/ic_weather"
-        android:title="Погода" />
-    <item
-        android:id="@+id/helpFragment"
+        android:title="Погода"/>
+    <item android:id="@+id/helpFragment"
         android:icon="@drawable/ic_help"
-        android:title="Справка" />
-
+        android:title="Справка"/>
 </menu>
+
+

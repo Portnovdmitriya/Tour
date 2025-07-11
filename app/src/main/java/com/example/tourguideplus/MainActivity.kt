@@ -73,6 +73,11 @@ class MainActivity : AppCompatActivity() {
                 .navigate(R.id.profileFragment)
             true
         }
+        R.id.menu_settings -> {
+            findNavController(R.id.nav_host_fragment)
+                .navigate(R.id.settingsFragment)
+            true
+        }
         else -> super.onOptionsItemSelected(item)
     }
 }

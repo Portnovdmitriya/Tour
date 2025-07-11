@@ -15,4 +15,8 @@
         android:icon="@drawable/ic_person"
         android:title="Профиль"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_settings"
+        android:title="Настройки"
+        app:showAsAction="never"/>
 </menu>

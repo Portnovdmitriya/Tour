@@ -34,32 +34,28 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1) ViewModel
-        val factory = PlaceViewModelFactory(requireActivity().application as TourGuideApp)
-        viewModel = ViewModelProvider(this, factory)
+        // ViewModel
+        val app = requireActivity().application as TourGuideApp
+        viewModel = ViewModelProvider(this, PlaceViewModelFactory(app))
             .get(PlaceViewModel::class.java)
 
-        // 2) Адаптер PlaceWithCategoriesAdapter
+        // Адаптер
         adapter = PlaceWithCategoriesAdapter { pwc: PlaceWithCategories ->
-            // навигация в детали: передаём pwc.place.id
             val bundle = bundleOf("placeId" to pwc.place.id)
-            findNavController().navigate(
-                R.id.action_global_navigation_favorites_to_placeDetailFragment,
-                bundle
-            )
+            // Навигация напрямую по ID фрагмента деталей
+            findNavController().navigate(R.id.placeDetailFragment, bundle)
         }
 
-        // 3) RecyclerView
+        // RecyclerView
         binding.rvFavorites.layoutManager = LinearLayoutManager(requireContext())
         binding.rvFavorites.adapter = adapter
         binding.rvFavorites.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         )
 
-        // 4) Подписываемся на LiveData мест с категориями и фильтруем избранное
-        viewModel.placesWithCategories.observe(viewLifecycleOwner) { list ->
-            val favs = list.filter { it.place.isFavorite }
-            adapter.submitList(favs)
+        // Подписываемся на favoritePlacesWithCategories вместо чистого placesWithCategories
+        viewModel.favoritePlacesWithCategories.observe(viewLifecycleOwner) { list ->
+            adapter.submitList(list)
         }
     }
 

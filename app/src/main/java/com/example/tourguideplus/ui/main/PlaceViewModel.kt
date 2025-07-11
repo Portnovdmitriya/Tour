@@ -8,14 +8,45 @@ import kotlinx.coroutines.launch
 
 class PlaceViewModel(application: TourGuideApp) : AndroidViewModel(application) {
 
-    private val repo = application.placeRepository
+    private val repo    = application.placeRepository
     private val catRepo = application.categoryRepository
+    private val favRepo = application.favoriteRepository
+
+    /** Все места с категориями */
     val placesWithCategories: LiveData<List<PlaceWithCategories>> =
         repo.allPlacesWithCategories
-    // Список всех мест
-    val places: LiveData<List<PlaceEntity>> = repo.allPlaces
 
-    // Для выбранного места
+    /** Все места (простым списком) */
+    val places: LiveData<List<PlaceEntity>> =
+        repo.allPlaces
+
+    /** Набор ID мест, отмеченных как избранное */
+    val favoriteIds: LiveData<Set<Long>> =
+        favRepo.allFavorites
+            .map { list -> list.map { it.placeId }.toSet() }
+
+
+    val favoritePlacesWithCategories: LiveData<List<PlaceWithCategories>> =
+        MediatorLiveData<List<PlaceWithCategories>>().apply {
+            var allPlaces: List<PlaceWithCategories> = emptyList()
+            var favSet: Set<Long> = emptySet()
+
+            fun update() {
+                value = allPlaces.filter { it.place.id in favSet }
+            }
+
+            addSource(placesWithCategories) { list ->
+                allPlaces = list
+                update()
+            }
+            addSource(favoriteIds) { set ->
+                favSet = set
+                update()
+            }
+        }
+
+
+
     private val _selectedPlace = MutableLiveData<PlaceEntity?>()
     val selectedPlace: LiveData<PlaceEntity?> = _selectedPlace
 
@@ -23,45 +54,43 @@ class PlaceViewModel(application: TourGuideApp) : AndroidViewModel(application) 
         _selectedPlace.postValue(repo.getPlaceById(id))
     }
 
-    fun selectPlace(place: PlaceEntity) {
-        _selectedPlace.value = place
-    }
 
-    // Экран «Справка» (вики)
-    private val _wikiExtract = MutableLiveData<String?>()
-    val wikiExtract: LiveData<String?> = _wikiExtract
-    fun loadWikiSummary(title: String) = viewModelScope.launch {
-        _wikiExtract.postValue(repo.fetchWikiSummary(title))
-    }
-
-    // Стандартное удаление
-    fun deletePlace(place: PlaceEntity) = viewModelScope.launch {
-        repo.delete(place)
-    }
-    // классический update без категорий
-    fun updatePlace(place: PlaceEntity) = viewModelScope.launch {
-        repo.update(place)
-    }
 
     fun createPlaceWithCategories(
         place: PlaceEntity,
         categoryIds: List<Long>
     ) = viewModelScope.launch {
-
-        val newId: Long = repo.insertReturnId(place)
-
+        val newId = repo.insertReturnId(place)
         catRepo.assignCategories(newId, categoryIds)
     }
-
 
     fun updatePlaceWithCategories(
         place: PlaceEntity,
         categoryIds: List<Long>
     ) = viewModelScope.launch {
-
         repo.update(place)
-
         catRepo.assignCategories(place.id, categoryIds)
+    }
+
+    fun deletePlace(place: PlaceEntity) = viewModelScope.launch {
+        repo.delete(place)
+    }
+
+
+    private val _wikiExtract = MutableLiveData<String?>()
+    val wikiExtract: LiveData<String?> = _wikiExtract
+
+    fun loadWikiSummary(title: String) = viewModelScope.launch {
+        _wikiExtract.postValue(repo.fetchWikiSummary(title))
+    }
+
+
+
+    /** Переключить статус «избранного» для данного placeId */
+    fun toggleFavorite(placeId: Long) = viewModelScope.launch {
+        val current = favoriteIds.value ?: emptySet()
+        if (placeId in current) favRepo.removeFavorite(placeId)
+        else favRepo.addFavorite(placeId)
     }
 }
 

@@ -17,7 +17,7 @@
             android:id="@+id/tvHelpTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Справка"
+            android:text="@string/reference"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp" />
@@ -27,7 +27,7 @@
             android:id="@+id/tvAuthor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Автор работы: Иванов Иван Иванович"
+            android:text="@string/autor"
             android:textSize="16sp"
             android:layout_marginBottom="12dp" />
 
@@ -36,7 +36,7 @@
             android:id="@+id/tvVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Версия приложения: 1.0"
+            android:text="@string/version_app"
             android:textSize="16sp"
             android:layout_marginBottom="12dp" />
 
@@ -45,7 +45,7 @@
             android:id="@+id/tvDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TourGuidePlus — мобильное приложение-гид по достопримечательностям. Позволяет просматривать места, добавлять в избранное, искать на карте, оставлять отзывы и узнавать прогноз погоды и информацию из Википедии."
+            android:text="@string/description_app"
             android:textSize="16sp"
             android:layout_marginBottom="12dp" />
 
@@ -54,10 +54,9 @@
             android:id="@+id/tvContact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Контакты разработчика: ivanov@example.com"
+            android:text="@string/contact"
             android:textSize="16sp"
             android:autoLink="email"
             android:layout_marginBottom="12dp" />
-
     </LinearLayout>
 </ScrollView>

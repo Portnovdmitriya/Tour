@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Единица температуры"
+        android:text="@string/temperature"
         android:textStyle="bold"
         android:textSize="16sp"/>
 
@@ -24,13 +24,13 @@
             android:id="@+id/rbCelsius"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="°C"/>
+            android:text="@string/cels"/>
 
         <RadioButton
             android:id="@+id/rbFahrenheit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="°F"
+            android:text="@string/far"
             android:layout_marginStart="16dp"/>
     </RadioGroup>
 

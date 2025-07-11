@@ -67,5 +67,9 @@
         android:id="@+id/notesFragment"
         android:name="com.example.tourguideplus.ui.notes.NotesFragment"
         android:label="Заметки"/>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.tourguideplus.ui.profile.ProfileFragment"
+        android:label="Профиль" />
 
 </navigation>

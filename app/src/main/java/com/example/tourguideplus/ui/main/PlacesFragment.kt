@@ -34,14 +34,14 @@ class PlacesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1) Инициализируем ViewModel
+        // Инициализируем ViewModel
         val app = requireActivity().application as TourGuideApp
         viewModel = ViewModelProvider(
             this,
             PlaceViewModelFactory(app)
         )[PlaceViewModel::class.java]
 
-        // 2) Настраиваем адаптер PlaceWithCategoriesAdapter
+        // Настраиваем адаптер PlaceWithCategoriesAdapter
         adapter = PlaceWithCategoriesAdapter { pwc: PlaceWithCategories ->
             // При клике передаём в аргументы ID места
             val args = bundleOf("placeId" to pwc.place.id)
@@ -51,14 +51,14 @@ class PlacesFragment : Fragment() {
             )
         }
 
-        // 3) Настраиваем RecyclerView
+        // Настраиваем RecyclerView
         binding.rvPlaces.layoutManager = LinearLayoutManager(requireContext())
         binding.rvPlaces.adapter = adapter
         binding.rvPlaces.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         )
 
-        // 4) Подписываемся на LiveData мест с категориями
+        // Подписываемся на LiveData мест с категориями
         viewModel.placesWithCategories.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
         }

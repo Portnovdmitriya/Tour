@@ -84,9 +84,7 @@ class WeatherFragment : Fragment() {
         }
     }
 
-    /**
-     * Конвертирует и показывает температуру в соответствии с lastTempC и выбранной настройкой.
-     */
+
     private fun updateTempDisplay() {
         val c = lastTempC ?: return
         val unit = settingsVm.unit.value.orEmpty()

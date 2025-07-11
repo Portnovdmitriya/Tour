@@ -51,24 +51,24 @@ class AddEditPlaceDialogFragment(
         }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // 1) Inflate binding
+        // Inflate binding
         binding = DialogAddEditPlaceBinding.inflate(layoutInflater)
 
-        // 2) Инициализируем ViewModel-ы
+        // Инициализируем ViewModel-ы
         val app = requireActivity().application as TourGuideApp
         placeVm = ViewModelProvider(this, PlaceViewModelFactory(app))
             .get(PlaceViewModel::class.java)
         categoryVm = ViewModelProvider(this, CategoryViewModelFactory(app))
             .get(CategoryViewModel::class.java)
 
-        // 3) Настраиваем RecyclerView для категорий
+        // Настраиваем RecyclerView для категорий
         categoryAdapter = SelectableCategoryAdapter { _, _ -> /* нет дополнительной логики */ }
         binding.rvCategories.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = categoryAdapter
         }
 
-        // 4) Подписываемся на список категорий
+        // Подписываемся на список категорий
         categoryVm.allCategories.observe(this) { cats ->
             categoryAdapter.submitList(cats)
             // Если редактируем — выставляем уже связанные
@@ -83,7 +83,7 @@ class AddEditPlaceDialogFragment(
             }
         }
 
-        // 5) Заполняем поля, если это редактирование
+        // Заполняем поля, если это редактирование
         existingPlace?.let {
             binding.etName.setText(it.name)
             binding.etNewCategory.isEnabled = false
@@ -94,7 +94,7 @@ class AddEditPlaceDialogFragment(
             }
         }
 
-        // 6) Добавление новой категории
+        // Добавление новой категории
         binding.btnAddCategory.setOnClickListener {
             val name = binding.etNewCategory.text.toString().trim()
             if (name.isEmpty()) {
@@ -105,7 +105,7 @@ class AddEditPlaceDialogFragment(
             }
         }
 
-        // 7) Фото из галереи / камеры
+        // Фото из галереи / камеры
         binding.btnChoosePhoto.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Добавить фото")
@@ -115,7 +115,7 @@ class AddEditPlaceDialogFragment(
                 .show()
         }
 
-        // 8) Сохранить место
+        // Сохранить место
         binding.btnSave.setOnClickListener {
             val name = binding.etName.text.toString().trim()
             val desc = binding.etDescription.text.toString().trim()
@@ -154,16 +154,14 @@ class AddEditPlaceDialogFragment(
             dismiss()
         }
 
-        // 9) Отмена
+        // Отмена
         binding.btnCancel.setOnClickListener { dismiss() }
 
-        // 10) Собираем и возвращаем диалог
+        // Собираем и возвращаем диалог
         return MaterialAlertDialogBuilder(requireContext())
             .setView(binding.root)
             .create()
     }
-
-    // ==== Методы для работы с фото ====
 
     private fun pickFromGallery() {
         val intent = Intent(

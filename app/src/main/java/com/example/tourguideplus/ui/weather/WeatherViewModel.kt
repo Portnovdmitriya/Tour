@@ -25,7 +25,7 @@ class WeatherViewModel(app: Application) : AndroidViewModel(app) {
     fun loadByCity(city: String) = viewModelScope.launch(Dispatchers.IO) {
         _weather.postValue(WeatherState.Loading)
 
-        // 1) Сначала попытка из кэша
+        // Сначала попытка из кэша
         val now = System.currentTimeMillis()
         val cache = try { cacheRepo.getCache(city) } catch (_:Exception){ null }
         var emittedFromCache = false
@@ -37,11 +37,11 @@ class WeatherViewModel(app: Application) : AndroidViewModel(app) {
             } catch (_: Exception) { /* парсинг провалился */ }
         }
 
-        // 2) Всегда пытаемся обновить из сети
+        // сегда пытаемся обновить из сети
         try {
             val fresh = repo.getCurrentByCity(city, apiKey)
             _weather.postValue(WeatherState.Success(fresh))
-            // 3) Сохраняем в кэш
+            // Сохраняем в кэш
             val jsonStr = gson.toJson(fresh)
             cacheRepo.upsert(WeatherCacheEntity(city, jsonStr, now))
         } catch (e: Exception) {

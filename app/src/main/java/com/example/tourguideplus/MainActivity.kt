@@ -19,18 +19,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1) Привязываем Toolbar
+        // Привязываем Toolbar
         setSupportActionBar(binding.toolbar)
 
-        // 2) Получаем NavController из NavHostFragment
+        // Получаем NavController из NavHostFragment
         val navHost = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHost.navController
 
-        // 3) Привязываем BottomNavigationView
+        // Привязываем BottomNavigationView
         binding.bottomNav.setupWithNavController(navController)
 
-        // 4) Показываем FAB только на вкладках Места и Маршруты
+        // Показываем FAB только на вкладках Места и Маршруты
         navController.addOnDestinationChangedListener { _, dest, _ ->
             if (dest.id == R.id.placesFragment || dest.id == R.id.routesFragment)
                 binding.fabAddPlace.show()
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                 binding.fabAddPlace.hide()
         }
 
-        // 5) Обрабатываем клик FAB
+        // Обрабатываем клик FAB
         binding.fabAddPlace.setOnClickListener {
             when (navController.currentDestination?.id) {
                 R.id.placesFragment ->

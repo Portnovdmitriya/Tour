@@ -12,6 +12,5 @@ data class PlaceEntity(
     val category: String,
     val latitude: Double?,
     val longitude: Double?,
-    val photoUri: String?,
-    val isFavorite: Boolean = false
+    val photoUri: String?
 )

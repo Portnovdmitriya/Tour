@@ -17,4 +17,7 @@ interface SettingDao {
 
     @Query("DELETE FROM settings WHERE key = :key")
     suspend fun deleteByKey(key: String)
+
+    @Query("SELECT * FROM settings WHERE `key` = :key LIMIT 1")
+    fun getSetting(key: String): LiveData<SettingEntity?>
 }

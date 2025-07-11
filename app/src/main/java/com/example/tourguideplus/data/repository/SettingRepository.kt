@@ -6,16 +6,16 @@ import com.example.tourguideplus.data.model.SettingEntity
 
 class SettingRepository(private val dao: SettingDao) {
 
-    /** Все настройки */
     val allSettings: LiveData<List<SettingEntity>> = dao.getAll()
 
-    /** Установить (или обновить) настройку */
     suspend fun upsert(setting: SettingEntity) {
         dao.upsert(setting)
     }
 
-    /** Удалить настройку по ключу */
     suspend fun deleteByKey(key: String) {
         dao.deleteByKey(key)
     }
+
+    fun getSetting(key: String): LiveData<SettingEntity?> =
+        dao.getSetting(key)
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.tourguideplus.databinding.ActivityMainBinding
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             when (navController.currentDestination?.id) {
                 R.id.placesFragment ->
                     AddEditPlaceDialogFragment().show(supportFragmentManager, "AddEditPlace")
+
                 R.id.routesFragment ->
                     AddEditRouteDialogFragment().show(supportFragmentManager, "AddEditRoute")
             }
@@ -56,12 +58,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_categories -> {
-            // Навигация к CategoriesFragment
-            val navHost = supportFragmentManager
-                .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-            navHost.navController.navigate(R.id.categoriesFragment)
+            findNavController(R.id.nav_host_fragment)
+                .navigate(R.id.categoriesFragment)
             true
         }
+
+        R.id.menu_notes -> {
+            findNavController(R.id.nav_host_fragment)
+                .navigate(R.id.notesFragment)
+            true
+        }
+
         else -> super.onOptionsItemSelected(item)
     }
 }
+

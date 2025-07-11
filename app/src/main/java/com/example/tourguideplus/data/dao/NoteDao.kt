@@ -5,10 +5,11 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.example.tourguideplus.data.model.NoteEntity
+import com.example.tourguideplus.data.model.NoteWithPlace
 
-// app/src/main/java/com/example/tourguideplus/data/dao/NoteDao.kt
 @Dao
 interface NoteDao {
     @Query("SELECT * FROM notes WHERE placeId = :placeId")
@@ -22,4 +23,8 @@ interface NoteDao {
 
     @Delete
     suspend fun delete(note: NoteEntity)
+
+    @Transaction
+    @Query("SELECT * FROM notes ORDER BY id DESC")
+    fun getAllNotesWithPlace(): LiveData<List<NoteWithPlace>>
 }

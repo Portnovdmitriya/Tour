@@ -63,4 +63,9 @@
     <action
         android:id="@+id/action_routesFragment_to_routeDetailFragment"
         app:destination="@id/routeDetailFragment" />
+    <fragment
+        android:id="@+id/notesFragment"
+        android:name="com.example.tourguideplus.ui.notes.NotesFragment"
+        android:label="Заметки"/>
+
 </navigation>

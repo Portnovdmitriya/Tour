@@ -7,4 +7,41 @@
         оставлять отзывы и узнавать прогноз погоды и информацию из Википедии.
     </string>
     <string name="help_contact">Контакты разработчика: ivanov@example.com</string>
+    <string name="name_category">Название категории</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
+    <string name="place">Место</string>
+    <string name="text_note">Текст заметки</string>
+    <string name="add_photo">Добавить фото</string>
+    <string name="name">Название</string>
+    <string name="new_category">Новая категория</string>
+    <string name="plus">+</string>
+    <string name="category">Категории</string>
+    <string name="description">Описание</string>
+    <string name="name_route">Название маршрута</string>
+    <string name="reference">Справка</string>
+    <string name="autor">Автор работы: Иванов Иван Иванович</string>
+    <string name="version_app">Версия приложения: 1.0</string>
+    <string name="description_app">TourGuidePlus — мобильное приложение-гид по
+        достопримечательностям. Позволяет просматривать места, добавлять в избранное,
+        искать на карте, оставлять отзывы и узнавать прогноз погоды и информацию из Википедии.</string>
+    <string name="contact">Контакты разработчика: ivanov@example.com</string>
+    <string name="description_place">Описание места</string>
+    <string name="delete_place">Удалить место</string>
+    <string name="add_to_favorite">Добавить в избранное</string>
+    <string name="show_card">Показать на карте</string>
+    <string name="wiki">Википедия</string>
+    <string name="name_autor">Имя</string>
+    <string name="email">Email</string>
+    <string name="place_in_route">Места в маршруте:</string>
+    <string name="temperature">Еденица температуры</string>
+    <string name="cels">°C</string>
+    <string name="far">°F</string>
+    <string name="town">Город</string>
+    <string name="show_weather">Показать погоду</string>
+    <string name="minus">-</string>
+    <string name="minus_cels">— °C</string>
+    <string name="humidity">Влажность: —%</string>
+    <string name="wind">Ветер: — м/с</string>
+    <string name="place_name">Название места</string>
 </resources>

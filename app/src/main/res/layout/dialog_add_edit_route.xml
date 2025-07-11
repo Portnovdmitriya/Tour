@@ -9,7 +9,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Название маршрута">
+        android:hint="@string/name_route">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etName"
             android:layout_width="match_parent"
@@ -20,7 +20,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Описание"
+        android:hint="@string/description"
         android:layout_marginTop="8dp">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDesc"
@@ -46,12 +46,12 @@
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Отмена"/>
+            android:text="@string/cancel"/>
         <Button
             android:id="@+id/btnSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Сохранить"
+            android:text="@string/save"
             android:layout_marginStart="8dp"/>
     </LinearLayout>
 </LinearLayout>

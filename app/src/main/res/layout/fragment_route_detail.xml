@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Места в маршруте:"
+            android:text="@string/place_in_route"
             android:textStyle="bold"
             android:layout_marginTop="16dp"/>
 

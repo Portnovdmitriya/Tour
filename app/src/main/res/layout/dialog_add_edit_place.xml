@@ -21,14 +21,14 @@
             android:id="@+id/btn_choose_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Добавить фото"
+            android:text="@string/add_photo"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"/>
         <!-- Название места -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Название"
+            android:hint="@string/name"
             android:layout_marginTop="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -48,7 +48,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:hint="Новая категория">
+                android:hint="@string/new_category">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNewCategory"
                     android:layout_width="match_parent"
@@ -59,13 +59,13 @@
                 android:id="@+id/btnAddCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+"/>
+                android:text="@string/plus"/>
         </LinearLayout>
         <!-- Список всех категорий с чекбоксами -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Категории"
+            android:text="@string/category"
             android:textStyle="bold"
             android:layout_marginTop="12dp"/>
 
@@ -78,7 +78,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Описание"
+            android:hint="@string/description"
             android:layout_marginTop="8dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_description"
@@ -99,13 +99,13 @@
                 android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Отмена"/>
+                android:text="@string/cancel"/>
 
             <Button
                 android:id="@+id/btn_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Сохранить"
+                android:text="@string/save"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
 

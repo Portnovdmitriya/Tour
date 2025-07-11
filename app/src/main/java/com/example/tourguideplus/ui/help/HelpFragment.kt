@@ -24,8 +24,6 @@ class HelpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Автор работы
-        binding.tvAuthor.text = "Автор работы: Иванов Иван Иванович"
 
         // Версия приложения через PackageManager
         val version = try {
@@ -35,7 +33,6 @@ class HelpFragment : Fragment() {
         } catch (e: Exception) {
             "?"
         }
-        binding.tvVersion.text = "Версия приложения: $version"
 
         // Описание и контакты из строковых ресурсов
         binding.tvDescription.text = getString(R.string.help_description)

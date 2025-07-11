@@ -83,8 +83,6 @@ class PlaceDetailFragment : Fragment() {
                     .show()
             }
         }
-
-        // (остальные кнопки — карта, wiki — без изменений)
     }
 
     override fun onDestroyView() {

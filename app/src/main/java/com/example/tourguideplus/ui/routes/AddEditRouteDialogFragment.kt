@@ -22,13 +22,13 @@ class AddEditRouteDialogFragment : DialogFragment(R.layout.dialog_add_edit_route
         super.onViewCreated(view, savedInstanceState)
         _binding = DialogAddEditRouteBinding.bind(view)
 
-        // 1) Инициализируем RouteViewModel
+        // Инициализируем RouteViewModel
         vm = ViewModelProvider(
             this,
             RouteViewModelFactory(requireActivity().application as TourGuideApp)
         )[RouteViewModel::class.java]
 
-        // 2) Подписываемся на список всех мест из PlaceViewModel
+        // Подписываемся на список всех мест из PlaceViewModel
         val placeVm = ViewModelProvider(
             requireActivity(),
             PlaceViewModelFactory(requireActivity().application as TourGuideApp)
@@ -40,7 +40,7 @@ class AddEditRouteDialogFragment : DialogFragment(R.layout.dialog_add_edit_route
             binding.rvPlacesSelect.adapter = adapter
         }
 
-        // 3) Обработчик кнопки «Сохранить»
+        // Обработчик кнопки «Сохранить»
         binding.btnSave.setOnClickListener {
             val name = binding.etName.text.toString().trim()
             if (name.isEmpty()) {
@@ -61,7 +61,7 @@ class AddEditRouteDialogFragment : DialogFragment(R.layout.dialog_add_edit_route
             dismiss()
         }
 
-        // 4) Отмена
+        // Отмена
         binding.btnCancel.setOnClickListener {
             dismiss()
         }

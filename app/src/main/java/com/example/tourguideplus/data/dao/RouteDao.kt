@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/tourguideplus/data/dao/RouteDao.kt
 package com.example.tourguideplus.data.dao
 
 import androidx.lifecycle.LiveData
@@ -7,7 +6,6 @@ import com.example.tourguideplus.data.model.RouteEntity
 import com.example.tourguideplus.data.model.RoutePlaceCrossRef
 import com.example.tourguideplus.data.model.RouteWithPlaces
 
-// app/src/main/java/com/example/tourguideplus/data/dao/RouteDao.kt
 @Dao
 interface RouteDao {
     // Существующие методы…

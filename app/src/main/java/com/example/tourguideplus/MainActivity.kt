@@ -68,7 +68,11 @@ class MainActivity : AppCompatActivity() {
                 .navigate(R.id.notesFragment)
             true
         }
-
+        R.id.menu_profile -> {
+            findNavController(R.id.nav_host_fragment)
+                .navigate(R.id.profileFragment)
+            true
+        }
         else -> super.onOptionsItemSelected(item)
     }
 }

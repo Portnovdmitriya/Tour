@@ -8,20 +8,30 @@ import com.example.tourguideplus.data.dao.CategoryDao
 import com.example.tourguideplus.data.dao.PlaceDao
 import com.example.tourguideplus.data.dao.RouteDao
 import com.example.tourguideplus.data.model.CategoryEntity
+import com.example.tourguideplus.data.model.FavoriteEntity
+import com.example.tourguideplus.data.model.NoteEntity
 import com.example.tourguideplus.data.model.PlaceCategoryCrossRef
 import com.example.tourguideplus.data.model.PlaceEntity
 import com.example.tourguideplus.data.model.RouteEntity
 import com.example.tourguideplus.data.model.RoutePlaceCrossRef
+import com.example.tourguideplus.data.model.SettingEntity
+import com.example.tourguideplus.data.model.UserEntity
+import com.example.tourguideplus.data.model.WeatherCacheEntity
 
 @Database(
     entities = [
         PlaceEntity::class,
+        CategoryEntity::class,
+        PlaceCategoryCrossRef::class,
         RouteEntity::class,
         RoutePlaceCrossRef::class,
-        CategoryEntity::class,
-        PlaceCategoryCrossRef::class
+        FavoriteEntity::class,
+        NoteEntity::class,
+        WeatherCacheEntity::class,
+        UserEntity::class,
+        SettingEntity::class
     ],
-    version = 9,
+    version = 10,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

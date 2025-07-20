@@ -4,7 +4,7 @@
     android:id="@+id/scroll_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="@dimen/padding">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,9 +25,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/name"
-            android:textSize="20sp"
+            android:textSize="@dimen/text20"
             android:textStyle="bold"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="@dimen/marginTop12"/>
 
         <!-- Категория -->
         <TextView
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/description_place"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="@dimen/marginTop8"/>
         <!-- Кнопка удаления -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_delete"
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/delete_place"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/marginTop16"
             app:iconTint="@color/purple_200"
             android:textColor="@color/black"/>
         <com.google.android.material.button.MaterialButton
@@ -57,7 +57,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/marginTop8"
             android:text="@string/add_to_favorite"
             android:textColor="@color/black"/>
         <com.google.android.material.button.MaterialButton
@@ -65,7 +65,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/marginTop8"
             android:text="@string/show_card"
             android:textColor="@color/black" />
         <com.google.android.material.button.MaterialButton
@@ -73,7 +73,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/marginTop8"
             android:text="@string/wiki"
             android:textColor="@color/black"/>
 

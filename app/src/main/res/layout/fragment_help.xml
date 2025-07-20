@@ -3,14 +3,14 @@
     android:id="@+id/scroll_help"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:padding="@dimen/padding"
     android:fitsSystemWindows="true">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp">
+        android:layout_marginLeft="@dimen/marginLeft">
 
         <!-- Заголовок -->
         <TextView
@@ -18,9 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/reference"
-            android:textSize="24sp"
+            android:textSize="@dimen/text24"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="@dimen/marginBottom16" />
 
         <!-- Информация об авторе -->
         <TextView
@@ -28,8 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/autor"
-            android:textSize="16sp"
-            android:layout_marginBottom="12dp" />
+            android:textSize="@dimen/text16"
+            android:layout_marginBottom="@dimen/marginBottom12" />
 
         <!-- Версия приложения -->
         <TextView
@@ -37,8 +37,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/version_app"
-            android:textSize="16sp"
-            android:layout_marginBottom="12dp" />
+            android:textSize="@dimen/text16"
+            android:layout_marginBottom="@dimen/marginBottom12" />
 
         <!-- Краткое описание -->
         <TextView
@@ -46,8 +46,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/description_app"
-            android:textSize="16sp"
-            android:layout_marginBottom="12dp" />
+            android:textSize="@dimen/text16"
+            android:layout_marginBottom="@dimen/marginBottom12" />
 
         <!-- Контакты или дополнительные ссылки -->
         <TextView
@@ -55,8 +55,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/contact"
-            android:textSize="16sp"
+            android:textSize="@dimen/text16"
             android:autoLink="email"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="@dimen/marginBottom12" />
     </LinearLayout>
 </ScrollView>

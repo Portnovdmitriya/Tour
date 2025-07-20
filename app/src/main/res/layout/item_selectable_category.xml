@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:padding="8dp"
+    android:padding="@dimen/padding8"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -15,6 +15,6 @@
         android:id="@+id/tv_category_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textSize="16sp"/>
+        android:layout_marginStart="@dimen/marginStart"
+        android:textSize="@dimen/text16"/>
 </LinearLayout>

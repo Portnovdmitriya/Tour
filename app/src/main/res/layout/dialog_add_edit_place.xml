@@ -4,7 +4,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:padding="16dp"
+        android:padding="@dimen/padding"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -13,7 +13,7 @@
         <ImageView
             android:id="@+id/iv_photo_preview"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="@dimen/layout_height200"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_photo_placeholder" />
 
@@ -23,13 +23,13 @@
             android:layout_height="wrap_content"
             android:text="@string/add_photo"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="@dimen/marginTop8"/>
         <!-- Название места -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="@dimen/marginTop8">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_name"
@@ -45,7 +45,7 @@
             android:gravity="center_vertical">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_width"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:hint="@string/new_category">
@@ -67,19 +67,19 @@
             android:layout_height="wrap_content"
             android:text="@string/category"
             android:textStyle="bold"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="@dimen/marginTop12"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvCategories"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="@dimen/marginTop4"/>
         <!-- Описание -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/description"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="@dimen/marginTop8">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_description"
                 android:layout_width="match_parent"
@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="@dimen/marginTop16">
 
             <Button
                 android:id="@+id/btn_cancel"
@@ -106,7 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/save"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="@dimen/marginStart"/>
         </LinearLayout>
 
     </LinearLayout>

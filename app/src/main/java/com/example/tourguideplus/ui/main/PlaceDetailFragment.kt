@@ -1,13 +1,13 @@
 package com.example.tourguideplus.ui.main
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.map
 import androidx.navigation.fragment.findNavController
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.data.model.PlaceEntity
@@ -16,77 +16,106 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PlaceDetailFragment : Fragment() {
 
-    private var _binding: FragmentPlaceDetailBinding? = null
-    private val binding get() = _binding!!
+    private var _b: FragmentPlaceDetailBinding? = null
+    private val b get() = _b!!
 
-    private lateinit var viewModel: PlaceViewModel
-    private var currentPlace: PlaceEntity? = null
+    private lateinit var vm: PlaceViewModel
+    private var current: PlaceEntity? = null
     private var placeId: Long = 0L
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentPlaceDetailBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ) = FragmentPlaceDetailBinding.inflate(inflater, container, false)
+        .also { _b = it }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // ViewModel
         val app = requireActivity().application as TourGuideApp
-        viewModel = ViewModelProvider(this, PlaceViewModelFactory(app))
+        vm = ViewModelProvider(this, PlaceViewModelFactory(app))
             .get(PlaceViewModel::class.java)
 
-        // Из аргументов
         placeId = arguments?.getLong("placeId") ?: return
+        vm.loadPlaceById(placeId)
 
-        // Загрузка самого места
-        viewModel.loadPlaceById(placeId)
-
-        // Когда место загрузилось — заполняем UI
-        viewModel.selectedPlace.observe(viewLifecycleOwner) { place ->
+        // Подписываемся на место
+        vm.selectedPlace.observe(viewLifecycleOwner) { place ->
             place ?: return@observe
-            currentPlace = place
-
-            binding.tvName.text = place.name
-            binding.tvDescription.text = place.description
-            place.photoUri?.let { uriStr ->
-                binding.ivPhoto.setImageURI(Uri.parse(uriStr))
-            }
+            current = place
+            b.tvName.text = place.name
+            b.tvDescription.text = place.description
+            place.photoUri?.let { b.ivPhoto.setImageURI(Uri.parse(it)) }
         }
 
-        // Наблюдаем за списком избранных ID, чтобы прописать текст кнопки
-        viewModel.favoriteIds.observe(viewLifecycleOwner) { favs ->
+        // Кнопка «Избранное»
+        vm.favoriteIds.observe(viewLifecycleOwner) { favs ->
             val isFav = favs.contains(placeId)
-            binding.btnFavorite.text =
+            b.btnFavorite.text =
                 if (isFav) "Убрать из избранного" else "Добавить в избранное"
         }
-
-        // Переключаем «избранное»
-        binding.btnFavorite.setOnClickListener {
-            viewModel.toggleFavorite(placeId)
+        b.btnFavorite.setOnClickListener {
+            vm.toggleFavorite(placeId)
         }
 
-        // Удаление места
-        binding.btnDelete.setOnClickListener {
-            currentPlace?.let { place ->
+        // Удаление (уже было)
+        b.btnDelete.setOnClickListener {
+            current?.let { place ->
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle("Удаление места")
                     .setMessage("Вы уверены, что хотите удалить «${place.name}»?")
                     .setNegativeButton("Отмена", null)
                     .setPositiveButton("Удалить") { _, _ ->
-                        viewModel.deletePlace(place)
+                        vm.deletePlace(place)
                         findNavController().popBackStack()
                     }
                     .show()
+            }
+        }
+
+        // Карта
+        b.btnMap.setOnClickListener {
+            current?.let { place ->
+                val query = Uri.encode(place.name)
+                val url = "https://www.google.com/maps/search/?api=1&query=$query"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    .addCategory(Intent.CATEGORY_BROWSABLE)
+                startActivity(Intent.createChooser(intent, "Открыть в браузере"))
+            }
+        }
+
+        // Википедия
+        b.btnWiki.setOnClickListener {
+            current?.let { place ->
+                // прогресс
+                val dlg = MaterialAlertDialogBuilder(requireContext())
+                    .setView(ProgressBar(requireContext()).apply {
+                        isIndeterminate = true
+                        setPadding(50,50,50,50)
+                    })
+                    .setCancelable(false)
+                    .show()
+
+                vm.loadWikiSummary(place.name)
+                vm.wikiExtract.observe(viewLifecycleOwner) { extract ->
+                    // убираем прогресс
+                    dlg.dismiss()
+                    if (!extract.isNullOrEmpty()) {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(place.name)
+                            .setMessage(extract)
+                            .setPositiveButton("OK", null)
+                            .show()
+                    } else {
+                        Toast.makeText(requireContext(),
+                            "Не удалось получить данные из Википедии",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        _b = null
     }
 }

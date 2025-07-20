@@ -9,7 +9,7 @@
         android:id="@+id/rvCategories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
+        android:padding="@dimen/padding"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -19,5 +19,5 @@
          android:src="@drawable/ic_add"
         app:layout_anchor="@id/rvCategories"
         app:layout_anchorGravity="bottom|end"
-        android:layout_margin="16dp"/>
+        android:layout_margin="@dimen/layout_margin"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

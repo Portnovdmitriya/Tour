@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/padding">
 
         <!-- Выбор места -->
         <TextView
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/text_note"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="@dimen/marginTop12">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etNoteText"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="@dimen/marginTop">
 
             <Button
                 android:id="@+id/btnCancel"
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/save"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="@dimen/marginStart"/>
         </LinearLayout>
 
     </LinearLayout>

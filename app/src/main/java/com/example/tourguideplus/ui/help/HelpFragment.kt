@@ -35,7 +35,7 @@ class HelpFragment : Fragment() {
         }
 
         // Описание и контакты из строковых ресурсов
-        binding.tvDescription.text = getString(R.string.help_description)
+        binding.tvDescription.text = getString(R.string.description_app)
         binding.tvContact.text     = getString(R.string.help_contact)
     }
 

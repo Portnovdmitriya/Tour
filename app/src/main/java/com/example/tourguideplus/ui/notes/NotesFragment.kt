@@ -37,18 +37,23 @@ class NotesFragment : Fragment() {
             .get(NoteViewModel::class.java)
 
         // Настраиваем адаптер и RecyclerView
-        adapter = NotesAdapter { nwp ->
-            if (nwp.place != null) {
-                AddEditNoteDialogFragment(nwp.note to nwp.place)
-                    .show(parentFragmentManager, "EditNote")
-            } else {
-                // Можно предложить удалить заметку или выбрать новое место
-                Toast.makeText(requireContext(),
-                    "Это место было удалено. Измените или удалите заметку.",
-                    Toast.LENGTH_LONG
-                ).show()
+        adapter = NotesAdapter(
+            onClick = { nwp: NoteWithPlace ->
+                nwp.place?.let { place ->
+                    AddEditNoteDialogFragment(nwp.note to place)
+                        .show(parentFragmentManager, "EditNote")
+                } ?: run {
+                    Toast.makeText(
+                        requireContext(),
+                        "Это место было удалено. Измените или удалите заметку.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            },
+            onToggleDone = { nwp, checked ->
+                vm.setDone(nwp.note.id, checked)
             }
-        }
+        )
         binding.rvNotes.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@NotesFragment.adapter

@@ -27,4 +27,8 @@ interface NoteDao {
     @Transaction
     @Query("SELECT * FROM notes ORDER BY id DESC")
     fun getAllNotesWithPlace(): LiveData<List<NoteWithPlace>>
+
+    // ↓ Новое
+    @Query("UPDATE notes SET isDone = :done WHERE id = :id")
+    suspend fun setDone(id: Long, done: Boolean)
 }

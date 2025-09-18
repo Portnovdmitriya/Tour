@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,10 +37,17 @@ class NotesFragment : Fragment() {
             .get(NoteViewModel::class.java)
 
         // Настраиваем адаптер и RecyclerView
-        adapter = NotesAdapter { nwp: NoteWithPlace ->
-            // Открываем диалог редактирования
-            AddEditNoteDialogFragment(nwp.note to nwp.place)
-                .show(parentFragmentManager, "EditNote")
+        adapter = NotesAdapter { nwp ->
+            if (nwp.place != null) {
+                AddEditNoteDialogFragment(nwp.note to nwp.place)
+                    .show(parentFragmentManager, "EditNote")
+            } else {
+                // Можно предложить удалить заметку или выбрать новое место
+                Toast.makeText(requireContext(),
+                    "Это место было удалено. Измените или удалите заметку.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
         binding.rvNotes.apply {
             layoutManager = LinearLayoutManager(requireContext())

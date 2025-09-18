@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TourGuidePlus</string>
     <string name="owm_api_key">be96bf4e8afed4f8b2f8c4f2441b6d06</string>
-    <string name="help_contact">Контакты разработчика: ivanov@example.com</string>
+    <string name="help_contact">Контакты разработчика: portnovdmitriya@yandex.ru</string>
     <string name="name_category">Название категории</string>
     <string name="cancel">Отмена</string>
     <string name="save">Сохранить</string>
@@ -20,7 +20,7 @@
     <string name="description_app">TourGuidePlus — мобильное приложение-гид по
         достопримечательностям. Позволяет просматривать места, добавлять в избранное,
         искать на карте, оставлять отзывы и узнавать прогноз погоды и информацию из Википедии.</string>
-    <string name="contact">Контакты разработчика: 70186875@online.muiv.ru </string>
+    <string name="contact">Контакты разработчика: portnovdmitriya@yandex.ru </string>
     <string name="description_place">Описание места</string>
     <string name="delete_place">Удалить место</string>
     <string name="add_to_favorite">Добавить в избранное</string>

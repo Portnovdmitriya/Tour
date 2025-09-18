@@ -29,7 +29,7 @@ class NotesAdapter(
         private val tvText  = itemView.findViewById<TextView>(R.id.tvNoteText)
 
         fun bind(nwp: NoteWithPlace) {
-            tvPlace.text = nwp.place.name
+            tvPlace.text = nwp.place?.name ?: "Место удалено"
             tvText.text  = nwp.note.text
             itemView.setOnClickListener { onClick(nwp) }
         }

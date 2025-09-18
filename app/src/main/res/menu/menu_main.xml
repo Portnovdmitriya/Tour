@@ -6,9 +6,9 @@
         android:title="Категории"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/menu_notes"
-        android:icon="@drawable/ic_note"
-        android:title="Заметки"
+        android:id="@+id/menu_help"
+        android:icon="@drawable/ic_help"
+        android:title="Справка"
         app:showAsAction="never"/>
     <item
         android:id="@+id/menu_profile"

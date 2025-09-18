@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -62,22 +64,25 @@ class MainActivity : AppCompatActivity() {
                 .navigate(R.id.categoriesFragment)
             true
         }
-
-        R.id.menu_notes -> {
+        // Новый пункт «Справка» в overflow:
+        R.id.menu_help -> {
             findNavController(R.id.nav_host_fragment)
-                .navigate(R.id.notesFragment)
+                .navigate(R.id.helpFragment)
             true
         }
+
         R.id.menu_profile -> {
             findNavController(R.id.nav_host_fragment)
                 .navigate(R.id.profileFragment)
             true
         }
+
         R.id.menu_settings -> {
             findNavController(R.id.nav_host_fragment)
                 .navigate(R.id.settingsFragment)
             true
         }
+
         else -> super.onOptionsItemSelected(item)
     }
 }

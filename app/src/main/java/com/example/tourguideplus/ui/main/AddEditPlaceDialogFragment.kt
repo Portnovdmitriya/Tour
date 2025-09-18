@@ -51,7 +51,7 @@ class AddEditPlaceDialogFragment(
         }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Inflate binding
+        // инициализируем бинд
         binding = DialogAddEditPlaceBinding.inflate(layoutInflater)
 
         // Инициализируем ViewModel-ы

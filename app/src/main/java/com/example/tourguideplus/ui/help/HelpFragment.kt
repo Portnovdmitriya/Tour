@@ -25,7 +25,7 @@ class HelpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        // Версия приложения через PackageManager
+        // Версия приложения через менеджер пакета
         val version = try {
             requireContext().packageManager
                 .getPackageInfo(requireContext().packageName, 0)

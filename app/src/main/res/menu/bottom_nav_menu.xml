@@ -12,9 +12,10 @@
     <item android:id="@+id/weatherFragment"
         android:icon="@drawable/ic_weather"
         android:title="Погода"/>
-    <item android:id="@+id/helpFragment"
-        android:icon="@drawable/ic_help"
-        android:title="Справка"/>
+    <!-- Заменил helpFragment -> notesFragment -->
+    <item android:id="@+id/notesFragment"
+        android:icon="@drawable/ic_note"
+        android:title="Заметки"/>
 </menu>
 
 

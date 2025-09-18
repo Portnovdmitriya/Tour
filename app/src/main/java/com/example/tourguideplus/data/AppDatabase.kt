@@ -36,7 +36,7 @@ import com.example.tourguideplus.data.model.WeatherCacheEntity
         UserEntity::class,
         SettingEntity::class
     ],
-    version = 14,
+    version = 15,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

@@ -25,6 +25,9 @@ class NoteViewModel(application: TourGuideApp) : AndroidViewModel(application) {
     fun delete(note: NoteEntity) = viewModelScope.launch {
         repo.delete(note)
     }
+    fun setDone(noteId: Long, done: Boolean) = viewModelScope.launch {
+        repo.setDone(noteId, done)
+    }
 }
 
 class NoteViewModelFactory(

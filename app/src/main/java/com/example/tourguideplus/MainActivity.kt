@@ -3,6 +3,7 @@ package com.example.tourguideplus
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
@@ -25,13 +26,19 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         // Получаем NavController из NavHostFragment
-        val navHost = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val app = application as TourGuideApp
+        val navHost =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHost.navController
 
         // Привязываем BottomNavigationView
         binding.bottomNav.setupWithNavController(navController)
 
+        navController.addOnDestinationChangedListener { _, dest, _ ->
+            val isAuth = dest.id == R.id.authFragment
+            binding.bottomNav.visibility = if (isAuth) View.GONE else View.VISIBLE
+            if (isAuth) binding.fabAddPlace.hide()
+        }
         // Показываем FAB только на вкладках Места и Маршруты
         navController.addOnDestinationChangedListener { _, dest, _ ->
             if (dest.id == R.id.placesFragment || dest.id == R.id.routesFragment)
@@ -48,6 +55,13 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.routesFragment ->
                     AddEditRouteDialogFragment().show(supportFragmentManager, "AddEditRoute")
+            }
+        }
+
+        app.settingRepository.getSetting("auth_user").observe(this) { st ->
+            val loggedIn = !st?.value.isNullOrEmpty()
+            if (!loggedIn && navController.currentDestination?.id != R.id.authFragment) {
+                navController.navigate(R.id.authFragment)
             }
         }
     }

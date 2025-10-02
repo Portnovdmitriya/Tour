@@ -13,6 +13,7 @@ import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.data.model.PlaceEntity
 import com.example.tourguideplus.databinding.FragmentPlaceDetailBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.example.tourguideplus.util.toPrettyDateTime
 
 class PlaceDetailFragment : Fragment() {
 
@@ -43,6 +44,7 @@ class PlaceDetailFragment : Fragment() {
             current = place
             b.tvName.text = place.name
             b.tvDescription.text = place.description
+            b.tvCreatedAt.text = "Создано: ${place.createdAt.toPrettyDateTime()}" // ← вот
             place.photoUri?.let { b.ivPhoto.setImageURI(Uri.parse(it)) }
         }
 

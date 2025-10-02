@@ -11,6 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tourguideplus.TourGuideApp
 import com.example.tourguideplus.databinding.FragmentRouteDetailBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import android.content.Intent
+import com.example.tourguideplus.R
+import com.example.tourguideplus.share.RouteShareCodec
+import java.net.URLEncoder
 
 class RouteDetailFragment : Fragment() {
 
@@ -71,6 +75,22 @@ class RouteDetailFragment : Fragment() {
                 binding.tvRouteDesc.text = rwp.route.description ?: ""
                 placeAdapter.update(rwp.places)
             }
+        }
+        binding.btnShare.setOnClickListener {
+            val rwp = vm.selected.value ?: return@setOnClickListener
+            val payload = RouteShareCodec.encode(rwp)
+
+            val bridge = getString(R.string.route_share_bridge) // https://script.google.com/.../exec
+            val url = "$bridge?open=route&payload=${URLEncoder.encode(payload, "UTF-8")}"
+
+            val send = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Вот маршрут «${rwp.route.name}» для TourGuidePlus:\n$url"
+                )
+            }
+            startActivity(Intent.createChooser(send, "Поделиться маршрутом"))
         }
     }
 

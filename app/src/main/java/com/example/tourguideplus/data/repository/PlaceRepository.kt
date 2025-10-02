@@ -53,4 +53,7 @@ class PlaceRepository(private val dao: PlaceDao) {
             null
         }
     }
+    suspend fun findByName(name: String): PlaceEntity? =
+        dao.findByName(name)
+
 }

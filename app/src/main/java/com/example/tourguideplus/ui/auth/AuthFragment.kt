@@ -26,16 +26,16 @@ class AuthFragment : Fragment() {
 
         b.btnLogin.setOnClickListener {
             val u = b.etUsername.text.toString().trim()
-            val p = b.etPassword.text.toString().trim()
-            if (u.isEmpty() || p.isEmpty()) {
-                Toast.makeText(requireContext(), "Введите логин и пароль", Toast.LENGTH_SHORT).show()
+            val p = b.etPassword.text.toString() // без trim(), чтобы не «съесть» пробелы, если вдруг это осознанно
+            if (u.isEmpty()) {
+                Toast.makeText(requireContext(), "Введите логин", Toast.LENGTH_SHORT).show()
             } else vm.login(u, p)
         }
         b.btnRegister.setOnClickListener {
             val u = b.etUsername.text.toString().trim()
-            val p = b.etPassword.text.toString().trim()
-            if (u.isEmpty() || p.isEmpty()) {
-                Toast.makeText(requireContext(), "Введите логин и пароль", Toast.LENGTH_SHORT).show()
+            val p = b.etPassword.text.toString()
+            if (u.isEmpty()) {
+                Toast.makeText(requireContext(), "Введите логин", Toast.LENGTH_SHORT).show()
             } else vm.register(u, p)
         }
 

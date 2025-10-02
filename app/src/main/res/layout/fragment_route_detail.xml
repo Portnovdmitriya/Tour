@@ -40,5 +40,14 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"/>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnShare"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Поделиться маршрутом"
+            android:layout_marginTop="@dimen/marginTop16"/>
+
+
     </LinearLayout>
 </ScrollView>

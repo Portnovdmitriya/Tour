@@ -12,5 +12,7 @@ data class PlaceEntity(
     val category: String,
     val latitude: Double?,
     val longitude: Double?,
-    val photoUri: String?
+    val photoUri: String?,
+    /** Время создания записи (мс от эпохи) */
+    val createdAt: Long = System.currentTimeMillis()
 )

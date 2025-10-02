@@ -30,6 +30,14 @@
             android:textSize="@dimen/text14"
             android:layout_marginTop="@dimen/marginTop4"/>
 
+        <TextView
+            android:id="@+id/tv_place_created"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text14"
+            android:textColor="?attr/colorSecondary"
+            android:layout_marginTop="@dimen/marginTop4"/>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

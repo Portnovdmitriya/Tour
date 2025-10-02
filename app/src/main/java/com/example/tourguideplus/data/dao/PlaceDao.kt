@@ -31,4 +31,8 @@ interface PlaceDao {
     @Transaction
     @Query("SELECT * FROM places ORDER BY name ASC")
     fun getPlacesWithCategories(): LiveData<List<PlaceWithCategories>>
+
+    @Query("SELECT * FROM places WHERE name = :name LIMIT 1")
+    suspend fun findByName(name: String): PlaceEntity?
+
 }

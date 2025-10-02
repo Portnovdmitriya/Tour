@@ -28,6 +28,14 @@
             android:textSize="@dimen/text20"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/marginTop12"/>
+        <!-- Дата создания -->
+        <TextView
+            android:id="@+id/tvCreatedAt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorSecondary"
+            android:textSize="@dimen/text14"
+            android:layout_marginTop="@dimen/marginTop4"/>
 
         <!-- Категория -->
         <TextView

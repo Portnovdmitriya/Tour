@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourguideplus.R
 import com.example.tourguideplus.data.model.PlaceWithCategories
+import com.example.tourguideplus.util.toPrettyDateTime
 
 class PlaceWithCategoriesAdapter(
     private val onItemClick: (PlaceWithCategories) -> Unit
@@ -26,12 +27,15 @@ class PlaceWithCategoriesAdapter(
 
     class VH(itemView: View, val onItemClick: (PlaceWithCategories) -> Unit)
         : RecyclerView.ViewHolder(itemView) {
+
         private val tvName = itemView.findViewById<TextView>(R.id.tv_place_name)
         private val tvCats = itemView.findViewById<TextView>(R.id.tv_place_category)
+        private val tvCreated = itemView.findViewById<TextView>(R.id.tv_place_created)
 
         fun bind(pwc: PlaceWithCategories) {
             tvName.text = pwc.place.name
             tvCats.text = pwc.categories.joinToString(", ") { it.name }
+            tvCreated.text = "Создано: ${pwc.place.createdAt.toPrettyDateTime()}"
             itemView.setOnClickListener { onItemClick(pwc) }
         }
     }

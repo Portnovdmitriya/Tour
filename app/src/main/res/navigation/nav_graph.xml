@@ -75,5 +75,9 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.tourguideplus.ui.settings.SettingsFragment"
         android:label="Настройки"/>
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="com.example.tourguideplus.ui.auth.AuthFragment"
+        android:label="Вход" />
 
 </navigation>

@@ -139,7 +139,8 @@ class AddEditPlaceDialogFragment(
                 description = desc,
                 latitude = existingPlace?.latitude,
                 longitude = existingPlace?.longitude,
-                photoUri = photoUri?.toString()
+                photoUri = photoUri?.toString(),
+                createdAt = existingPlace?.createdAt ?: System.currentTimeMillis()
             )
             if (existingPlace == null)
                 placeVm.createPlaceWithCategories(place, sel)

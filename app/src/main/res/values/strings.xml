@@ -39,5 +39,7 @@
     <string name="humidity">Влажность: —%</string>
     <string name="wind">Ветер: — м/с</string>
     <string name="place_name">Название места</string>
-    <string name="gs_base_url">https://script.google.com/macros/s/AKfycbxVCVd_Jgb8pzfIXqEu8l-qSZ2YA0z0_8t61GaZpWA0Lu3ferTaO958VgrfTPLzzS2w/exec/</string>
+    <string name="gs_base_url">https://script.google.com/macros/s/AKfycbxG6v2p7cY7L5ZI-tjTooxYuCePk3ZmykmDez1Fa6-gc_uUjnFfbg19fNZDkkuWdXj0/</string>
+    <string name="route_share_bridge">https://script.google.com/macros/s/AKfycbzCyEIBF-kT3ZRO7_etLd_ErhLAkcP66_vjvc2zR01KZ_3RpdPDLgRTths7sTMVFIxU/exec</string>
+
 </resources>

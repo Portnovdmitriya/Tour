@@ -76,6 +76,16 @@ class RouteDetailFragment : Fragment() {
                 placeAdapter.update(rwp.places)
             }
         }
+
+        binding.btnEditRoute.setOnClickListener {
+            val rwp = vm.selected.value ?: return@setOnClickListener
+            EditRouteNameDialogFragment(
+                routeId = rwp.route.id,
+                currentName = rwp.route.name,
+                currentDesc = rwp.route.description
+            ).show(parentFragmentManager, "EditRouteName")
+        }
+
         binding.btnShare.setOnClickListener {
             val rwp = vm.selected.value ?: return@setOnClickListener
             val payload = RouteShareCodec.encode(rwp)
@@ -91,6 +101,12 @@ class RouteDetailFragment : Fragment() {
                 )
             }
             startActivity(Intent.createChooser(send, "Поделиться маршрутом"))
+        }
+
+        binding.btnEditPlaces.setOnClickListener {
+            val rwp = vm.selected.value ?: return@setOnClickListener
+            EditRoutePlacesDialogFragment(routeId = rwp.route.id)
+                .show(parentFragmentManager, "EditRoutePlaces")
         }
     }
 

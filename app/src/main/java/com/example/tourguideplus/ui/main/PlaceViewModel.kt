@@ -76,6 +76,9 @@ class PlaceViewModel(application: TourGuideApp) : AndroidViewModel(application) 
         repo.delete(place)
     }
 
+    fun updatePlace(place: PlaceEntity) = viewModelScope.launch {
+        repo.update(place)
+    }
 
     private val _wikiExtract = MutableLiveData<String?>()
     val wikiExtract: LiveData<String?> = _wikiExtract

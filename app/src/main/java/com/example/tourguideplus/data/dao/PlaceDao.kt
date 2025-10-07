@@ -35,4 +35,6 @@ interface PlaceDao {
     @Query("SELECT * FROM places WHERE name = :name LIMIT 1")
     suspend fun findByName(name: String): PlaceEntity?
 
+    @Update
+    suspend fun update(place: PlaceEntity)
 }

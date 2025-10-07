@@ -10,11 +10,14 @@ import com.example.tourguideplus.R
 import com.example.tourguideplus.data.model.PlaceEntity
 
 class SelectablePlaceAdapter(
-    private val places: List<PlaceEntity>
+    private val places: List<PlaceEntity>,
+    initialSelectedIds: Set<Long> = emptySet()
 ) : RecyclerView.Adapter<SelectablePlaceAdapter.VH>() {
 
     // Состояние чекбоксов
-    private val selected = BooleanArray(places.size) { false }
+    private val selected = BooleanArray(places.size) { idx ->
+        initialSelectedIds.contains(places[idx].id)
+    }
 
     fun getSelectedPlaceIds(): List<Long> =
         places.mapIndexedNotNull { idx, place -> if (selected[idx]) place.id else null }
@@ -38,10 +41,9 @@ class SelectablePlaceAdapter(
         private val check: CheckBox = itemView.findViewById(R.id.cb_select)
         fun bind(place: PlaceEntity, isChecked: Boolean, onCheck: (Boolean)->Unit) {
             nameTv.text = place.name
+            check.setOnCheckedChangeListener(null)
             check.isChecked = isChecked
-            check.setOnCheckedChangeListener { _, checked ->
-                onCheck(checked)
-            }
+            check.setOnCheckedChangeListener { _, checked -> onCheck(checked) }
         }
     }
 }

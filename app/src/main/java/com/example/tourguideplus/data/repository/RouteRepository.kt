@@ -29,4 +29,7 @@ class RouteRepository(private val dao: RouteDao) {
         dao.deleteRoute(route)
         dao.deleteCrossRefsForRoute(route.id)
     }
+
+    fun observeRouteWithPlaces(id: Long): LiveData<RouteWithPlaces?> =
+        dao.observeRouteWithPlacesById(id)
 }

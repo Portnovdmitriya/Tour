@@ -18,6 +18,14 @@
             android:textSize="@dimen/text20"
             android:textStyle="bold"/>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEditRoute"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Редактировать маршрут"
+            android:layout_marginTop="12dp"/>
+
         <!-- Описание -->
         <TextView
             android:id="@+id/tvRouteDesc"
@@ -47,6 +55,14 @@
             android:layout_height="wrap_content"
             android:text="Поделиться маршрутом"
             android:layout_marginTop="@dimen/marginTop16"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEditPlaces"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Редактировать места"
+            android:layout_marginTop="8dp"/>
 
 
     </LinearLayout>

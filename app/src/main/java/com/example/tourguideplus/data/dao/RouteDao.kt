@@ -58,4 +58,8 @@ interface RouteDao {
             insertCrossRef(RoutePlaceCrossRef(route.id, pid))
         }
     }
+
+    @Transaction
+    @Query("SELECT * FROM routes WHERE id = :routeId")
+    fun observeRouteWithPlacesById(routeId: Long): androidx.lifecycle.LiveData<RouteWithPlaces?>
 }

@@ -10,25 +10,26 @@ import kotlinx.coroutines.launch
 class RouteViewModel(app: TourGuideApp) : AndroidViewModel(app) {
     private val repo = app.routeRepository
 
-    // Список маршрутов с местами
     val routesWithPlaces: LiveData<List<RouteWithPlaces>> = repo.allRoutesWithPlaces
 
-    private val _selected = MutableLiveData<RouteWithPlaces?>()
-    val selected: LiveData<RouteWithPlaces?> = _selected
+    private val routeIdLive = MutableLiveData<Long>()
+    val selected: LiveData<RouteWithPlaces?> =
+        routeIdLive.switchMap { id -> repo.observeRouteWithPlaces(id) }
 
-    fun select(routeId: Long) = viewModelScope.launch {
-        _selected.value = repo.getRouteWithPlaces(routeId)
+    fun select(routeId: Long) {
+        routeIdLive.value = routeId
     }
 
-    // Создать новый маршрут вместе с местами
     fun createRoute(name: String, desc: String?, placeIds: List<Long>) = viewModelScope.launch {
         val route = RouteEntity(name = name, description = desc)
-        repo.createRouteWithPlaces(route, placeIds)
+        val newId = repo.createRouteWithPlaces(route, placeIds)
+        // при создании тоже можно сразу “подписаться”
+        select(newId)
     }
 
-    // Обновить существующий
     fun updateRoute(route: RouteEntity, placeIds: List<Long>) = viewModelScope.launch {
         repo.updateRouteWithPlaces(route, placeIds)
+        // selected обновится сам, потому что LiveData из БД
     }
 
     fun deleteRoute(route: RouteEntity) = viewModelScope.launch {
